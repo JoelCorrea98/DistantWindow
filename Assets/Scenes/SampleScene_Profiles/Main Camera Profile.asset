@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8597636111354021717
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8427c21434302540bde7af61abaf50e, type: 3}
+  m_Name: DimensionFogPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Gradient:
+    overrideState: 1
+    value: 0.8
+  _Radius:
+    overrideState: 1
+    value: 40
+  _FogColor:
+    overrideState: 1
+    value: {r: 0.6981132, g: 0.2799039, b: 0.5114548, a: 0}
+--- !u!114 &-6759779784360664533
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f001c8196ee44b6448b6754a04d2f98a, type: 3}
+  m_Name: RedppShader
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Color0:
+    overrideState: 1
+    value: {r: 0.4245283, g: 0.08610716, b: 0.15379149, a: 0}
+  _Color1:
+    overrideState: 1
+    value: {r: 0.47058824, g: 0.08627451, b: 0.29411766, a: 0}
+  _Step:
+    overrideState: 1
+    value: 1
+  _ColorBorde:
+    overrideState: 1
+    value: {r: 1, g: 1, b: 1, a: 0}
+--- !u!114 &-5962237649780618009
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aad188dbc949a6468d5ba12355cc517, type: 3}
+  m_Name: RGBShaderPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Color0:
+    overrideState: 1
+    value:
+      r: 0.47058824
+      g: 0.08627451
+      b: 0.16784061
+      a: 0
+  _Color1:
+    overrideState: 1
+    value:
+      r: 0.1981132
+      g: 0.04205234
+      b: 0.07525681
+      a: 0
+  _Step:
+    overrideState: 1
+    value: 2
+  _ColorBorde:
+    overrideState: 1
+    value:
+      r: 0
+      g: 0
+      b: 0
+      a: 0
+--- !u!114 &-4353744603251683977
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aad188dbc949a6468d5ba12355cc517, type: 3}
+  m_Name: RGBShaderPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Color0:
+    overrideState: 0
+    value:
+      r: 0.4716981
+      g: 0.08677466
+      b: 0.2938909
+      a: 0
+  _Color1:
+    overrideState: 0
+    value:
+      r: 0.1981132
+      g: 0.04205234
+      b: 0.07525681
+      a: 0
+  _Step:
+    overrideState: 1
+    value: 2
+  _ColorBorde:
+    overrideState: 1
+    value:
+      r: 0.83137256
+      g: 0.31860757
+      b: 0.050980367
+      a: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: Main Camera Profile
+  m_EditorClassIdentifier: 
+  settings:
+  - {fileID: -6759779784360664533}
+  - {fileID: -8597636111354021717}
+--- !u!114 &1350069559506967343
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22c8e11fdf3819a44b4d6384cd210f59, type: 3}
+  m_Name: RGBShaderPPSSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+--- !u!114 &2911271413996472686
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60f794c33cf09184cae744c418cd6f70, type: 3}
+  m_Name: RGBShaderPPSSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+--- !u!114 &2988403968733582295
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8427c21434302540bde7af61abaf50e, type: 3}
+  m_Name: DimensionFogPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Gradient:
+    overrideState: 1
+    value: 11
+  _Radius:
+    overrideState: 1
+    value: 3
+  _FogColor:
+    overrideState: 1
+    value: {r: 0.05098038, g: 0.34161568, b: 0.54901963, a: 0}
+--- !u!114 &3095237671283596278
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdeb9035cdbb233428949c1ac9624e5f, type: 3}
+  m_Name: RGBShader
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Color0:
+    overrideState: 0
+    value:
+      r: 0.4716981
+      g: 0.08677466
+      b: 0.2938909
+      a: 0
+  _Color1:
+    overrideState: 1
+    value:
+      r: 0.24528301
+      g: 0.06594873
+      b: 0.10181563
+      a: 0
+--- !u!114 &3903899932150467613
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8427c21434302540bde7af61abaf50e, type: 3}
+  m_Name: DimensionFogPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Gradient:
+    overrideState: 1
+    value: 17
+  _Radius:
+    overrideState: 1
+    value: 3.59
+  _FogColor:
+    overrideState: 1
+    value: {r: 0.34121278, g: 0.16286935, b: 0.5660378, a: 0}

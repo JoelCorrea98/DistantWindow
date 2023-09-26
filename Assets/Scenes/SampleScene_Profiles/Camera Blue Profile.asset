@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7871695982908057206
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8427c21434302540bde7af61abaf50e, type: 3}
+  m_Name: DimensionFogPP
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Gradient:
+    overrideState: 1
+    value: 0.8
+  _Radius:
+    overrideState: 1
+    value: 40
+  _FogColor:
+    overrideState: 1
+    value: {r: 0.13843894, g: 0.28283498, b: 0.4811321, a: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: Camera Blue Profile
+  m_EditorClassIdentifier: 
+  settings:
+  - {fileID: 4189784252651169050}
+  - {fileID: -7871695982908057206}
+--- !u!114 &4189784252651169050
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68a28fd955812cf4e87c4a847d1fdb2e, type: 3}
+  m_Name: BlueppShader1
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Color2:
+    overrideState: 1
+    value: {r: 0.08627451, g: 0.12192477, b: 0.42352942, a: 0}
+  _Color3:
+    overrideState: 1
+    value: {r: 0.08627451, g: 0.2563539, b: 0.47058824, a: 0}
+  _Step2:
+    overrideState: 1
+    value: 1
+  _ColorBorde2:
+    overrideState: 1
+    value: {r: 1, g: 1, b: 1, a: 0}
