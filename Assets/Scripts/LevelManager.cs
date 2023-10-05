@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class LevelManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class LevelManager : MonoBehaviour
 
     public Scenemanager scM;
     public AudioManager auM;
+    public RigidbodyFirstPersonController playerController;
 
     private void Awake()
     {

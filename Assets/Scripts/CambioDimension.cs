@@ -57,24 +57,10 @@ public class CambioDimension : MonoBehaviour
             item.gameObject.SetActive(false);
         }
 
-        if (indexDimension == 0)
-        {
-            cameraDimensions[indexDimension].gameObject.SetActive(true);
-            objectDimensions[indexDimension].SetActive(true);
-            pl.GetCam(cameraDimensions[indexDimension]);
-        }
-        if (indexDimension == 1)
-        {
-            cameraDimensions[indexDimension].gameObject.SetActive(true);
-            objectDimensions[indexDimension].SetActive(true);
-            pl.GetCam(cameraDimensions[indexDimension]);
-        }
-        if (indexDimension == 2)
-        {
-            cameraDimensions[indexDimension].gameObject.SetActive(true);
-            objectDimensions[indexDimension].SetActive(true);
-            pl.GetCam(cameraDimensions[indexDimension]);
-        }
+        cameraDimensions[indexDimension].gameObject.SetActive(true);
+        objectDimensions[indexDimension].SetActive(true);
+        pl.GetCam(cameraDimensions[indexDimension]);
+        LevelManager.Instance.playerController.cam = cameraDimensions[indexDimension];
     }
 
 }
