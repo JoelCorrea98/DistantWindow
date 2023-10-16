@@ -60,6 +60,7 @@ public class CambioDimension : MonoBehaviour
         cameraDimensions[indexDimension].gameObject.SetActive(true);
         objectDimensions[indexDimension].SetActive(true);
         pl.GetCam(cameraDimensions[indexDimension]);
+        Debug.Log(LevelManager.Instance.playerController);
         LevelManager.Instance.playerController.cam = cameraDimensions[indexDimension];
     }
 

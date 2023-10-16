@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace UnityStandardAssets.Characters.FirstPerson
@@ -15,7 +16,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             public float StrafeSpeed = 4.0f;    // Speed when walking sideways
             public float SpeedInAir = 8.0f;   // Speed when onair
             public float JumpForce = 30f;
-            public float LowJumpMultiplier = 2f;
+            public float TrampolineForce = 40f;
+            public float StopRigidbodyDelay = 0.3f;
+            public float TrampolineStopRigidbodyDelay = 0.5f;
+            public float FallMultiplier = 5f;
+            public float StopJumpVelocity = 5f;
+            public float SlideForce = 15f;
 
             [HideInInspector] public float CurrentTargetSpeed = 8f;
             
@@ -47,7 +53,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         }
 
-        public float FallMultiplier = 2.5f;
         public bool canrotate;
         public Camera cam;
         public MovementSettings movementSettings = new MovementSettings();
@@ -65,6 +70,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private CapsuleCollider m_Capsule;
         private float m_YRotation;
         private bool  m_IsGrounded;
+        private bool m_IsSliding;
 
 
         public Vector3 Velocity
@@ -104,11 +110,25 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     NormalJump();
                 }
 
+                if (Input.GetKeyDown(KeyCode.LeftShift) && !m_IsSliding)
+                {
+                    Slide();
+                }
+
             }
 
             if (m_RigidBody.velocity.y < 0)
             {
-                m_RigidBody.velocity += Vector3.up * Physics.gravity.y * (FallMultiplier - 1) * Time.deltaTime;
+                m_RigidBody.velocity += Vector3.up * Physics.gravity.y * (movementSettings.FallMultiplier - 1) * Time.deltaTime;
+            }
+
+            if (m_IsSliding && !Input.GetKey(KeyCode.LeftShift))
+            {
+                // Check for obstacles above before stop sliding
+                if (!IsObstacleAbove())
+                {
+                    StopSlide();
+                }
             }
         }
 
@@ -196,6 +216,29 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
             m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
+            StartCoroutine(StopRigidbodyAfterDelay(movementSettings.StopRigidbodyDelay));
+        }
+        public void Slide()
+        {
+            gameObject.transform.localScale = new Vector3(1, 0.5f, 0);
+            m_RigidBody.AddRelativeForce(Vector3.forward * movementSettings.SlideForce, ForceMode.Impulse);
+            m_IsSliding = true;
+        }
+        private bool IsObstacleAbove()
+        {
+            // Perform a raycast to check for obstacles above
+            RaycastHit hit;
+            Vector3 rayStart = transform.position + Vector3.up * 0.5f; // Adjust the starting position
+            Vector3 rayDirection = Vector3.up;
+            return !!Physics.Raycast(rayStart, rayDirection, out hit, 1);
+        }
+        public void StopSlide()
+        {
+            // Reset the player's scale to the original size
+            gameObject.transform.localScale = Vector3.one;
+
+            // Stop the sliding by setting m_IsSliding to false
+            m_IsSliding = false;
         }
         public void SwitchDirectionJump()
         {
@@ -246,6 +289,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_IsGrounded = false;
 
             }
+        }
+
+        void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.layer == 12) // Trampoline
+            {
+                m_RigidBody.AddForce(new Vector3(0f, movementSettings.TrampolineForce, 0f), ForceMode.Impulse);
+                StartCoroutine(StopRigidbodyAfterDelay(movementSettings.TrampolineStopRigidbodyDelay));
+            }
+        }
+
+        private IEnumerator StopRigidbodyAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, movementSettings.StopJumpVelocity, m_RigidBody.velocity.z);
         }
     }
 }

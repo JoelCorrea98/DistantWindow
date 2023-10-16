@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private float upforce;
     private float straightforce;
 
+    public float TrampolineImpulse;
     public float WallJumpUpVelocity;
     public float WallJumpForwardVelocity;
     public float WallJumpSideVelocity;
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour
     public bool WallRunning;
     public bool WallrunningLeft;
     public bool WallrunningRight;
+    public bool CantWallrunLeft;
+    public bool CantWallrunRight;
     private bool canwallrun; // ensure that player can only wallrun once before needing to hit the ground again, can be modified for double wallruns
     
     public bool IsParkour;
@@ -64,6 +67,8 @@ public class PlayerController : MonoBehaviour
         {
             rb.drag = drag_grounded;
             canwallrun = true;
+            CantWallrunLeft = false;
+            CantWallrunRight = false;
         }
         else
         {
@@ -94,25 +99,6 @@ public class PlayerController : MonoBehaviour
             cameraAnimator.CrossFade("Vault",0.1f);
         }
 
-        //climb
-        if (detectClimbObject.Obstruction && !detectClimbObstruction.Obstruction && !CanClimb && !IsParkour && !WallRunning
-            && (Input.GetKey(KeyCode.Space) || !rbfps.Grounded) && Input.GetAxisRaw("Vertical") > 0f)
-        {
-            CanClimb = true;
-        }
-
-        if (CanClimb)
-        {
-            CanClimb = false; // so this is only called once
-            rb.isKinematic = true; //ensure physics do not interrupt the vault
-            RecordedMoveToPosition = ClimbEndPoint.position;
-            RecordedStartPosition = transform.position;
-            IsParkour = true;
-            chosenParkourMoveTime = ClimbTime;
-
-            cameraAnimator.CrossFade("Climb",0.1f);
-        }
-
 
         //Parkour movement
         if (IsParkour && t_parkour < 1f)
@@ -130,29 +116,31 @@ public class PlayerController : MonoBehaviour
         }
 
         //Wallrun
-        if (DetectWallL.Obstruction && !rbfps.Grounded && !IsParkour && canwallrun) // if detect wall on the left and is not on the ground and not doing parkour(climb/vault)
+        if (DetectWallL.Obstruction && !rbfps.Grounded && !IsParkour && canwallrun && !CantWallrunLeft) // if detect wall on the left and is not on the ground and not doing parkour(climb/vault)
         {
-            Debug.Log("Left");
             WallrunningLeft = true;
             canwallrun = false;
             upforce = WallRunUpForce; //refer to line 186
             straightforce = WallRunStraightForce;
+            CantWallrunLeft = false;
+            CantWallrunRight = false;
         }
 
-        if (DetectWallR.Obstruction && !rbfps.Grounded && !IsParkour && canwallrun) // if detect wall on thr right and is not on the ground
+        if (DetectWallR.Obstruction && !rbfps.Grounded && !IsParkour && canwallrun && !CantWallrunRight) // if detect wall on thr right and is not on the ground
         {
-            Debug.Log("Right");
             WallrunningRight = true;
             canwallrun = false;
             upforce = WallRunUpForce;
             straightforce = WallRunStraightForce;
+            CantWallrunLeft = false;
+            CantWallrunRight = false;
         }
-        if (WallrunningLeft && !DetectWallL.Obstruction || Input.GetAxisRaw("Vertical") <= 0f || rbfps.relativevelocity.magnitude < 1f) // if there is no wall on the lef tor pressing forward or forward speed < 1 (refer to fpscontroller script)
+        if (WallrunningLeft && !DetectWallL.Obstruction) // if there is no wall on the lef tor pressing forward or forward speed < 1 (refer to fpscontroller script)
         {
             WallrunningLeft = false;
             WallrunningRight = false;
         }
-        if (WallrunningRight && !DetectWallR.Obstruction || Input.GetAxisRaw("Vertical") <= 0f || rbfps.relativevelocity.magnitude < 1f) // same as above
+        if (WallrunningRight && !DetectWallR.Obstruction) // same as above
         {
             WallrunningLeft = false;
             WallrunningRight = false;
@@ -171,7 +159,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (WallrunningLeft)
-        {     
+        {
            cameraAnimator.SetBool("WallLeft", true); //Wallrun camera tilt
         }
         else
@@ -189,17 +177,27 @@ public class PlayerController : MonoBehaviour
 
         if (WallRunning)
         {
-            
-            rb.velocity = new Vector3(rb.velocity.x, upforce, straightforce); //set the y velocity while wallrunning
+            //rb.isKinematic = true;
+            rb.velocity = (transform.forward * straightforce) + (transform.up * upforce); //set the y velocity while wallrunning
             upforce -= WallRunUpForce_DecreaseRate * Time.deltaTime; //so the player will have a curve like wallrun, upforce from line 136
             straightforce -= WallRunUpForce_DecreaseRate * Time.deltaTime;
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                rb.velocity = (transform.forward * WallJumpForwardVelocity) + (transform.up * WallJumpUpVelocity) + ((WallrunningLeft ? 1 : -1) * transform.right * WallJumpSideVelocity); //walljump
+                RaycastHit hit;
+                float rayLength = 1.0f; // Adjust this value as needed
 
-                WallrunningLeft = false;
-                WallrunningRight = false;
+                if (Physics.Raycast(transform.position, transform.right * (WallrunningLeft ? -1 : 1), out hit, rayLength))
+                {
+                    // Get the normal vector at the collision point
+                    Vector3 collisionNormal = hit.normal;
+                    rb.velocity = Vector3.zero;
+                    rb.AddForce((collisionNormal * WallJumpSideVelocity) + (transform.forward * WallJumpForwardVelocity) + (transform.up * WallJumpUpVelocity), ForceMode.Impulse); //walljump
+                    CantWallrunLeft = WallrunningLeft;
+                    CantWallrunRight = WallrunningRight;
+                    WallrunningLeft = false;
+                    WallrunningRight = false;
+                }
             }
             if(rbfps.Grounded)
             {
@@ -207,8 +205,5 @@ public class PlayerController : MonoBehaviour
                 WallrunningRight = false;
             }
         }
-
-
     }
-  
 }

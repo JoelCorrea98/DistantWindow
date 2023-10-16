@@ -9,7 +9,7 @@ public class DetectObs : MonoBehaviour
     public int layer = -1;
     public bool Obstruction;
     public GameObject Object;
-    private Collider colnow;
+    public Collider colnow;
     void OnTriggerStay(Collider col)
     {
         if (!Obstruction)
