@@ -26,5 +26,5 @@ Material:
     m_Floats:
     - _Cutoff: 0.5
     - _Power: 1
-    - __dirty: 0
+    - __dirty: 1
     m_Colors: []

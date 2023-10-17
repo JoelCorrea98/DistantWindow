@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 59de98eee06482747b409db508470179, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,8 +92,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.3243217, y: 1, z: 1}
+  m_Center: {x: 0.16216087, y: 0, z: 0}
 --- !u!1001 &2094721309419915918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,7 +114,7 @@ PrefabInstance:
     - target: {fileID: 6173514617102604891, guid: fa81db31a85ec3d499d5b8f5d38295ae,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.72999954
+      value: 0.5699997
       objectReference: {fileID: 0}
     - target: {fileID: 6173514617102604891, guid: fa81db31a85ec3d499d5b8f5d38295ae,
         type: 3}
@@ -205,7 +205,7 @@ PrefabInstance:
     - target: {fileID: 6173514617102604891, guid: fa81db31a85ec3d499d5b8f5d38295ae,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.72999954
+      value: 0.57
       objectReference: {fileID: 0}
     - target: {fileID: 6173514617102604891, guid: fa81db31a85ec3d499d5b8f5d38295ae,
         type: 3}
