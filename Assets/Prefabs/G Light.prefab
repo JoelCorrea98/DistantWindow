@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3747758129759566501}
   - component: {fileID: 3747758129759566500}
   m_Layer: 10
-  m_Name: G Light (10)
+  m_Name: G Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,8 +42,8 @@ Light:
   serializedVersion: 9
   m_Type: 2
   m_Color: {r: 0, g: 1, b: 0.09638786, a: 1}
-  m_Intensity: 24
-  m_Range: 15.505981
+  m_Intensity: 30
+  m_Range: 12
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
