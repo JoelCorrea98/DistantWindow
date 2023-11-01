@@ -295,7 +295,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (collision.gameObject.layer == 12) // Trampoline
             {
-                m_RigidBody.AddForce(new Vector3(0f, movementSettings.TrampolineForce, 0f), ForceMode.Impulse);
+                m_RigidBody.AddForce(collision.gameObject.transform.forward * movementSettings.TrampolineForce, ForceMode.Impulse);
                 StartCoroutine(StopRigidbodyAfterDelay(movementSettings.TrampolineStopRigidbodyDelay));
             }
         }
