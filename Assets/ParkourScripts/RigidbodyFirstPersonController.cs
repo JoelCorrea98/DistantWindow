@@ -53,6 +53,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         }
 
+        public float slideCD = 1;
         public bool canrotate;
         public Camera cam;
         public MovementSettings movementSettings = new MovementSettings();
@@ -71,7 +72,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_YRotation;
         private bool  m_IsGrounded;
         private bool m_IsSliding;
-
+        private float m_slideCD;
 
         public Vector3 Velocity
         {
@@ -221,8 +222,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public void Slide()
         {
             gameObject.transform.localScale = new Vector3(1, 0.5f, 0);
-            m_RigidBody.AddRelativeForce(Vector3.forward * movementSettings.SlideForce, ForceMode.Impulse);
             m_IsSliding = true;
+            Debug.Log(m_RigidBody.velocity);
+            if (m_slideCD > Time.time && (m_RigidBody.velocity.x > 10 || m_RigidBody.velocity.z > 10)) return;
+            m_slideCD = Time.time + slideCD;
+            m_RigidBody.AddRelativeForce(Vector3.forward * movementSettings.SlideForce, ForceMode.Impulse);
         }
         private bool IsObstacleAbove()
         {
@@ -295,6 +299,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (collision.gameObject.layer == 12) // Trampoline
             {
+                m_RigidBody.velocity = Vector3.zero;
                 m_RigidBody.AddForce(collision.gameObject.transform.forward * movementSettings.TrampolineForce, ForceMode.Impulse);
                 StartCoroutine(StopRigidbodyAfterDelay(movementSettings.TrampolineStopRigidbodyDelay));
             }
