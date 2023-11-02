@@ -33753,6 +33753,7 @@ MonoBehaviour:
   - {fileID: 6631726167045831717}
   pl: {fileID: 6631726168596552930}
   pe: {fileID: 1402996919}
+  energyToRemove: 10
 --- !u!114 &6631726168596552929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33973,6 +33974,11 @@ PrefabInstance:
         type: 3}
       propertyPath: pe
       value: 
-      objectReference: {fileID: 1402996919}
+      objectReference: {fileID: 1533173561}
+    - target: {fileID: 8303988333370415052, guid: f38c37d74d183514287fe19a1393918e,
+        type: 3}
+      propertyPath: energyToRemove
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f38c37d74d183514287fe19a1393918e, type: 3}

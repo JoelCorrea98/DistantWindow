@@ -10,30 +10,32 @@ public class CambioDimension : MonoBehaviour
 
     public PlayerLook pl;
     public PlayerEnergy pe;
+    public float energyToRemove = 10;
 
     private void Start()
     {
-        ChangeDimension(0);
+        ChangeDimension(0, false);
         ObjectAvtivation();
     }
     private void Update()
     {
         if (Input.GetButtonDown("RightClick"))
         {
-            ChangeDimension(1);
+            ChangeDimension(1, true);
             ObjectAvtivation();
         }
         else if (Input.GetButtonDown("LeftClick"))
         {
-            ChangeDimension(-1);
+            ChangeDimension(-1, true);
             ObjectAvtivation();
         }
     }
 
-    private void ChangeDimension(int direction)
+    private void ChangeDimension(int direction, bool removeEnergy)
     {
         indexDimension += direction;
         LevelManager.Instance.auM.PlayChangeDimension();
+        if(removeEnergy) pe.removeEnergy(energyToRemove);
 
         if (indexDimension > 2)
         {
@@ -60,7 +62,6 @@ public class CambioDimension : MonoBehaviour
         cameraDimensions[indexDimension].gameObject.SetActive(true);
         objectDimensions[indexDimension].SetActive(true);
         pl.GetCam(cameraDimensions[indexDimension]);
-        Debug.Log(LevelManager.Instance.playerController);
         LevelManager.Instance.playerController.cam = cameraDimensions[indexDimension];
     }
 

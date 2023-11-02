@@ -34,6 +34,21 @@ public class PlayerEnergy : MonoBehaviour
         energyBar.fillAmount = actualEnergy / totalEnergy;
     }
 
+    public void removeEnergy(float energyToRemove)
+    {
+        float energySum = actualEnergy - energyToRemove;
+
+        if(energySum < 0)
+        {
+            actualEnergy = 0;
+        } else
+        {
+            actualEnergy = energySum;
+        }
+
+        canvasRefresh();
+    }
+
     void OnTriggerEnter(Collider other)
     {
         GameObject go = other.gameObject;
