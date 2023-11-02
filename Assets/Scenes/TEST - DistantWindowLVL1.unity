@@ -15005,6 +15005,7 @@ MonoBehaviour:
   scM: {fileID: 1310686484}
   auM: {fileID: 872503853}
   playerController: {fileID: 1768262057}
+  spawnPoint: {fileID: 0}
 --- !u!4 &962421123
 Transform:
   m_ObjectHideFlags: 0

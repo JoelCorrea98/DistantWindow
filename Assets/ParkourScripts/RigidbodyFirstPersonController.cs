@@ -223,7 +223,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             gameObject.transform.localScale = new Vector3(1, 0.5f, 0);
             m_IsSliding = true;
-            Debug.Log(m_RigidBody.velocity);
             if (m_slideCD > Time.time && (m_RigidBody.velocity.x > 10 || m_RigidBody.velocity.z > 10)) return;
             m_slideCD = Time.time + slideCD;
             m_RigidBody.AddRelativeForce(Vector3.forward * movementSettings.SlideForce, ForceMode.Impulse);
@@ -297,11 +296,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.layer == 12) // Trampoline
+            int layer = collision.gameObject.layer;
+            if (layer == 12) // Trampoline
             {
                 m_RigidBody.velocity = Vector3.zero;
                 m_RigidBody.AddForce(collision.gameObject.transform.forward * movementSettings.TrampolineForce, ForceMode.Impulse);
                 StartCoroutine(StopRigidbodyAfterDelay(movementSettings.TrampolineStopRigidbodyDelay));
+            } else if (layer == 17) // Death
+            {
+                m_RigidBody.velocity = Vector3.zero;
+                Transform sp = LevelManager.Instance.spawnPoint;
+                m_RigidBody.transform.position = sp.position;
+                m_RigidBody.transform.rotation = sp.rotation;
             }
         }
 

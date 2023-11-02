@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public Scenemanager scM;
     public AudioManager auM;
     public RigidbodyFirstPersonController playerController;
+    public Transform spawnPoint;
 
     private void Awake()
     {

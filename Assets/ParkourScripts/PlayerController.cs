@@ -58,6 +58,9 @@ public class PlayerController : MonoBehaviour
     {
         rbfps = GetComponent<RigidbodyFirstPersonController>();
         rb = GetComponent<Rigidbody>();
+        Transform sp = LevelManager.Instance.spawnPoint;
+        rb.transform.position = sp.position;
+        rb.transform.rotation = sp.rotation;
     }
 
     // Update is called once per frame
