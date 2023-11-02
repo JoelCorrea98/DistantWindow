@@ -36,13 +36,21 @@ public class PlayerEnergy : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 13)
+        GameObject go = other.gameObject;
+        if (go.layer == 13) // EnergyUp
         {
-            actualEnergy += 30;
-            if (actualEnergy > totalEnergy)
+            EnergyUp eu = go.GetComponent<EnergyUp>();
+            float energySum = actualEnergy + eu.Energy;
+
+            if(energySum > totalEnergy)
             {
                 actualEnergy = totalEnergy;
+            } else
+            {
+                actualEnergy = energySum;
             }
+
+            eu.DestroyEnergy();
         }
     }
 }

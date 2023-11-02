@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class EnergyUp : MonoBehaviour
 {
-    void OnCollisionEnter(Collision other)
+    public float Energy = 30;
+    public void DestroyEnergy()
     {
-        if (other.gameObject.layer == 11)
-        {
-            Destroy(this.gameObject);
-        }
+        Destroy(gameObject);
     }
 }
