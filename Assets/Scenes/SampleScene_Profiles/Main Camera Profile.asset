@@ -18,10 +18,10 @@ MonoBehaviour:
     value: 1
   _Gradient:
     overrideState: 1
-    value: 0.8
+    value: 0.7
   _Radius:
     overrideState: 1
-    value: 40
+    value: 70
   _FogColor:
     overrideState: 1
     value: {r: 0.6981132, g: 0.2799039, b: 0.5114548, a: 0}

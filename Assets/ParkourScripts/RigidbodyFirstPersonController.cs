@@ -22,6 +22,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             public float FallMultiplier = 5f;
             public float StopJumpVelocity = 5f;
             public float SlideForce = 15f;
+            public float coyoteTime;
+            public float _coyoteTimeCounter;
+            public float CoyoteTimeCounter { get => _coyoteTimeCounter; set { _coyoteTimeCounter = value; } }
+
 
             [HideInInspector] public float CurrentTargetSpeed = 8f;
             
@@ -103,10 +107,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Update()
         {
             relativevelocity = transform.InverseTransformDirection(m_RigidBody.velocity);
-            if (m_IsGrounded)
+            if (m_IsGrounded )
             {
-
-                if (Input.GetKeyDown(KeyCode.Space))
+                movementSettings._coyoteTimeCounter = movementSettings.coyoteTime;
+                if (Input.GetKeyDown(KeyCode.Space) )
                 {
                     NormalJump();
                 }
@@ -116,6 +120,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     Slide();
                 }
 
+            }
+            else
+            {
+                movementSettings._coyoteTimeCounter -= Time.deltaTime;
+                if (Input.GetKeyDown(KeyCode.Space) && movementSettings._coyoteTimeCounter > 0)
+                {
+                    NormalJump();
+                }
             }
 
             if (m_RigidBody.velocity.y < 0)
