@@ -23,9 +23,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852959163959798483}
-  m_LocalRotation: {x: -0.00000054716367, y: -0.00000037252872, z: -0.0000003576278,
-    w: -1}
-  m_LocalPosition: {x: 36.43, y: 32.621, z: 152.63}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 47.29, y: 43.71, z: 112.72}
   m_LocalScale: {x: 1, y: 10.0000105, z: 10}
   m_Children:
   - {fileID: 5860602743494518310}
@@ -58,13 +57,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4968928852820618786}
-  m_LocalRotation: {x: 0.70710677, y: 0.7071068, z: 0.00000032663806, w: 0.00000032663803}
-  m_LocalPosition: {x: 0.83, y: 0, z: -0}
+  m_LocalRotation: {x: 0.70710737, y: 0.7071063, z: 0.0000003266384, w: 0.0000003266379}
+  m_LocalPosition: {x: 0.5, y: 0.00000038146933, z: 0}
   m_LocalScale: {x: 0.0999999, y: 1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 852959163959798495}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 180.00002, z: 90.00001}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 90}
 --- !u!33 &4968928852820618799
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -87,10 +86,12 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5d08ecb0689825648a76e7531c001440, type: 2}
+  - {fileID: 2100000, guid: bbaebb14d1d0b024d8fb357ad5b90637, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,6 +112,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7364798481510489386
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,17 +161,19 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7364798481510489386}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 59de98eee06482747b409db508470179, type: 2}
+  - {fileID: 2100000, guid: bbaebb14d1d0b024d8fb357ad5b90637, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -190,6 +194,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &7557553183188297730
 BoxCollider:
   m_ObjectHideFlags: 0
