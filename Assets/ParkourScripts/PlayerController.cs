@@ -12,9 +12,11 @@ public class PlayerController : MonoBehaviour
     public DetectObs detectClimbObject; //checks for climb object
     public DetectObs detectClimbObstruction; //checks if theres somthing in front of the object e.g walls that will not allow the player to climb
 
-
     public DetectObs DetectWallL; //detects for a wall on the left
     public DetectObs DetectWallR; //detects for a wall on the right
+
+    public GameObject SpeedFX;
+    public float SpeedForFX = 12;
 
     public Animator cameraAnimator;
 
@@ -118,6 +120,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (rb.velocity.magnitude > SpeedForFX)
+        {
+            SpeedFX.SetActive(true);
+        } else
+        {
+            SpeedFX.SetActive(false);
+        }
+
         //Wallrun
         if (DetectWallL.Obstruction && !rbfps.Grounded && !IsParkour && canwallrun && !CantWallrunLeft) // if detect wall on the left and is not on the ground and not doing parkour(climb/vault)
         {
@@ -161,22 +171,30 @@ public class PlayerController : MonoBehaviour
             canwallrun = true;
         }
 
-        if (WallrunningLeft)
-        {
-           cameraAnimator.SetBool("WallLeft", true); //Wallrun camera tilt
-        }
-        else
-        {
-            cameraAnimator.SetBool("WallLeft", false);
-        }
         if (WallrunningRight)
-        {           
+        {
             cameraAnimator.SetBool("WallRight", true);
+           
+            LevelManager.Instance.auM.PlayWallrun();
         }
         else
         {
             cameraAnimator.SetBool("WallRight", false);
+            //LevelManager.Instance.auM.StopWallrun();
+
         }
+        if (WallrunningLeft)
+        {
+           cameraAnimator.SetBool("WallLeft", true); //Wallrun camera tilt
+            LevelManager.Instance.auM.PlayWallrun();
+        }
+        else
+        {
+            cameraAnimator.SetBool("WallLeft", false);
+            //LevelManager.Instance.auM.StopWallrun();
+        }
+
+        
 
         if (WallRunning)
         {
@@ -207,6 +225,10 @@ public class PlayerController : MonoBehaviour
                 WallrunningLeft = false;
                 WallrunningRight = false;
             }
+        }
+        else
+        {
+            LevelManager.Instance.auM.StopWallrun();
         }
     }
 }

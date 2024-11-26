@@ -63,6 +63,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public MovementSettings movementSettings = new MovementSettings();
         public MouseLook mouseLook = new MouseLook();
         public Vector3 relativevelocity;
+        public Animator cameraAnimator;
+        public float TimeFallingForAnimation = 2;
 
         public DetectObs detectGround;
 
@@ -77,6 +79,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool  m_IsGrounded;
         private bool m_IsSliding;
         private float m_slideCD;
+        private float m_timeFalling;
 
         public Vector3 Velocity
         {
@@ -107,8 +110,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Update()
         {
             relativevelocity = transform.InverseTransformDirection(m_RigidBody.velocity);
-            if (m_IsGrounded )
+            if (m_IsGrounded)
             {
+                if(m_timeFalling >= TimeFallingForAnimation)
+                {
+                    cameraAnimator.CrossFade("HighLanding", 0.1f);
+                }
+
+                m_timeFalling = 0;
+
                 movementSettings._coyoteTimeCounter = movementSettings.coyoteTime;
                 if (Input.GetKeyDown(KeyCode.Space) )
                 {
@@ -123,6 +133,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
+                m_timeFalling += Time.deltaTime;
+
                 movementSettings._coyoteTimeCounter -= Time.deltaTime;
                 if (Input.GetKeyDown(KeyCode.Space) && movementSettings._coyoteTimeCounter > 0)
                 {
@@ -227,6 +239,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         public void NormalJump()
         {
+            LevelManager.Instance.auM.PlayJump();
             m_RigidBody.velocity = new Vector3(m_RigidBody.velocity.x, 0f, m_RigidBody.velocity.z);
             m_RigidBody.AddForce(new Vector3(0f, movementSettings.JumpForce, 0f), ForceMode.Impulse);
             StartCoroutine(StopRigidbodyAfterDelay(movementSettings.StopRigidbodyDelay));
@@ -238,6 +251,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (m_slideCD > Time.time && (m_RigidBody.velocity.x > 10 || m_RigidBody.velocity.z > 10)) return;
             m_slideCD = Time.time + slideCD;
             m_RigidBody.AddRelativeForce(Vector3.forward * movementSettings.SlideForce, ForceMode.Impulse);
+            LevelManager.Instance.auM.PlayGlide();
         }
         private bool IsObstacleAbove()
         {
@@ -314,6 +328,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_RigidBody.velocity = Vector3.zero;
                 m_RigidBody.AddForce(collision.gameObject.transform.forward * movementSettings.TrampolineForce, ForceMode.Impulse);
                 StartCoroutine(StopRigidbodyAfterDelay(movementSettings.TrampolineStopRigidbodyDelay));
+                LevelManager.Instance.auM.PlayTrampoline();
             } else if (layer == 17) // Death
             {
                 m_RigidBody.velocity = Vector3.zero;

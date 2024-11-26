@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/DW-LVL1.unity
+    guid: 53c1a3417206c0942b374c2d1f8eaedb
+  - enabled: 0
     path: Assets/Scenes/CreditsScene.unity
     guid: 67f3188bc144a34498f259f7f9934c67
   - enabled: 1
@@ -14,13 +17,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WinScene.unity
     guid: 4ae8750cae44e9a4f9662f0f2048a69a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DistantWindowLVL1.unity
     guid: d9f57e9a95a2b63468b25cddd9ff942f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DistantWindowLVL2.unity
     guid: 1f96f293f11481e40acbad0eb526d1b6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/IntroductionScene.unity
     guid: 3163809424b11c24485925b31a45ba43
   - enabled: 1

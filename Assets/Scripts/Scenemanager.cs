@@ -5,6 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class Scenemanager : MonoBehaviour
 {
+    void Update ()
+    { 
+        if (Input.GetKeyDown(KeyCode.R))
+	    {
+            Level1Scene();
+	    }    
+    }
+
     public void IntroScene()
     { SceneManager.LoadScene("IntroductionScene"); }
 
@@ -17,7 +25,7 @@ public class Scenemanager : MonoBehaviour
     public void MainMenuScene()
     { SceneManager.LoadScene("MainScene"); }
 
-    public void Level1Scene()
+    public void Level1SceneOLD()
     { SceneManager.LoadScene("DistantWindowLVL1"); }
 
     public void Level2Scene()
@@ -25,6 +33,9 @@ public class Scenemanager : MonoBehaviour
 
     public void CreditsScene()
     { SceneManager.LoadScene("CreditsScene"); }
+
+    public void Level1Scene()
+    { SceneManager.LoadScene("DW-LVL1"); }
 
     public void QuitScene()
     { Application.Quit(); }

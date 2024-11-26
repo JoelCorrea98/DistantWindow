@@ -58,7 +58,7 @@ MonoBehaviour:
     value: 1
   _Color2:
     overrideState: 1
-    value: {r: 0.08627451, g: 0.12192477, b: 0.42352942, a: 0}
+    value: {r: 0.08627451, g: 0.42352942, b: 0.21960784, a: 0}
   _Color3:
     overrideState: 1
     value: {r: 0.08627451, g: 0.2563539, b: 0.47058824, a: 0}

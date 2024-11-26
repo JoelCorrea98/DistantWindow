@@ -7,10 +7,13 @@ public class CambioDimension : MonoBehaviour
     private int indexDimension;
     public List<GameObject> objectDimensions;
     public List<Camera> cameraDimensions;
+    public GameObject VolumeChangeDimension;
 
     public PlayerLook pl;
     public PlayerEnergy pe;
     public float energyToRemove = 10;
+
+
 
     private void Start()
     {
@@ -33,6 +36,7 @@ public class CambioDimension : MonoBehaviour
 
     private void ChangeDimension(int direction, bool removeEnergy)
     {
+        StartCoroutine(ExecuteChangeEffect());
         indexDimension += direction;
         LevelManager.Instance.auM.PlayChangeDimension();
         if(removeEnergy) pe.removeEnergy(energyToRemove);
@@ -63,6 +67,14 @@ public class CambioDimension : MonoBehaviour
         objectDimensions[indexDimension].SetActive(true);
         pl.GetCam(cameraDimensions[indexDimension]);
         LevelManager.Instance.playerController.cam = cameraDimensions[indexDimension];
+    }
+
+    IEnumerator ExecuteChangeEffect()
+    {
+        VolumeChangeDimension.SetActive(true);
+        yield return new WaitForSeconds(0.4f);
+        VolumeChangeDimension.SetActive(false);
+
     }
 
 }
