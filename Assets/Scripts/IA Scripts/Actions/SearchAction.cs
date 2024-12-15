@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SearchAction : GOAPAction
 {
+    /*
     private WorldState worldState; // Referencia al estado del mundo
 
     public SearchAction(WorldState worldState)
@@ -48,4 +49,5 @@ public class SearchAction : GOAPAction
     {
         return "search";
     }
+    */
 }

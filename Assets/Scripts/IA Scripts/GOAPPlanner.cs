@@ -3,8 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-public class GOAPPlanner
+public class GOAPPlanner : MonoBehaviour
 {
+    private void Start()
+    {
+        StartCoroutine(GeneratePlan());
+    }
+    private IEnumerator GeneratePlan()
+    {
+        yield return new WaitForSeconds(0.2f);
+        var observedState = new Dictionary<string, object>();
+
+
+    }
+    #region NOABRIR
+    /*
     public List<GOAPAction> Plan(Dictionary<string, object> worldStateCopy, Dictionary<string, object> goal, List<GOAPAction> availableActions)
     {
         Debug.Log("Starting plan generation...");
@@ -115,7 +128,6 @@ public class GOAPPlanner
 
         yield return new WaitForSeconds(0.01f);
 
-   */
     private bool IsGoalAchieved(Dictionary<string, object> worldStateCopy, Dictionary<string, object> goal)
     {
         foreach (var condition in goal)
@@ -141,4 +153,6 @@ public class GOAPPlanner
         Debug.Log("se cumplio");
         return true;
     }
+    */
+    #endregion
 }

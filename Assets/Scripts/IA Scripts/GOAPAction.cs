@@ -1,43 +1,70 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class GOAPAction
 {
-    // Precondiciones para ejecutar esta acción
-    public Dictionary<string, object> Preconditions { get; private set; } = new Dictionary<string, object>();
+    public Dictionary<string, bool> preconditions { get; private set; }
 
-    // Efectos que produce esta acción
-    public Dictionary<string, object> Effects { get; private set; } = new Dictionary<string, object>();
+    public Func<AIStateBase, bool> Preconditions = delegate { return true; };
+    public Dictionary<string, bool> effects { get; private set; }
 
-    // Costo de ejecutar esta acción
-    public float Cost { get; set; } = 1f;
+    public Func<AIStateBase, AIStateBase> Effects;
 
-    // Método para comprobar si las precondiciones están cumplidas
-    public virtual bool ArePreconditionsMet(Dictionary<string, object> worldState)
+    public float Cost { get; private set; }
+
+    public string Name { get; private set; }
+
+    public GOAPAction(string name)
     {
-        foreach (var precondition in Preconditions)
+
+        this.Name = name;
+        Cost = 1f;
+        preconditions = new Dictionary<string, bool>();
+        effects = new Dictionary<string, bool>();
+
+        //Para que funcione en la mezcla se hizo esto, pero se le podria settear a cada Action su propia logica de effect
+        Effects = (s) =>
         {
-            if (!worldState.ContainsKey(precondition.Key) || worldState[precondition.Key] != precondition.Value)
+            foreach (var item in effects)
             {
-                return false;
+                s.worldState.values[item.Key] = item.Value;
             }
-        }
-        return true;
+            return s;
+        };
     }
 
-    // Método para aplicar los efectos al estado del mundo etereo 
-    public virtual Dictionary<string,object> ApplyEffects(Dictionary<string, object> worldState)
+    public GOAPAction SetCost(float cost)
     {
-        foreach (var effect in Effects)
+        if (cost < 1f)
         {
-            worldState[effect.Key] = effect.Value;
+            Debug.Log(string.Format("Warning: Using cost < 1f for '{0}' could yield sub-optimal results", Name));
         }
-
-        return worldState;
+        this.Cost = cost;
+        return this;
     }
-    public virtual string GetName()
+    public GOAPAction Pre(string s, bool value)
     {
-        return "GoapAction";
+        preconditions[s] = value;
+        return this;
     }
+
+    public GOAPAction Pre(Func<AIStateBase, bool> p)
+    {
+        Preconditions = p;
+        return this;
+    }
+    public GOAPAction Effect(string s, bool value)
+    {
+        effects[s] = value;
+        return this;
+    }
+
+    public GOAPAction Effect(Func<AIStateBase, AIStateBase> e)
+    {
+        Effects = e;
+        return this;
+    }
+    
 }
