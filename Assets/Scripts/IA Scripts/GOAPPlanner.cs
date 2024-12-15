@@ -64,6 +64,10 @@ public class GOAPPlanner
         while (openList.Count > 0 && watchdog >0)
         {
             watchdog--;
+
+            if (watchdog == 0)
+                Debug.LogWarning("Watchdog limit reached. GOAP stopped.");
+
             var (currentPlan, currentState, currentCost) = openList.Get();
 
 
@@ -75,32 +79,24 @@ public class GOAPPlanner
             }
             foreach (var action in availableActions)
             {
-                foreach (var item in currentState)
-                {
-                    Debug.Log("key: "+item.Key +" value: "+ item.Value);
-                }
                 if (action.ArePreconditionsMet(currentState))
                 {
-                    Debug.Log("6");
+                    Debug.Log(action.GetName());
 
-                    Debug.Log("antes del applyeffects" +currentState["PlayerDetected"]);
-                    var newState = action.ApplyEffects(currentState);
-                    Debug.Log("después del applyeffects" + newState["PlayerDetected"]);
+                    var newState = new Dictionary<string, object>(currentState);
+                    newState = action.ApplyEffects(newState);
 
                     var newPlan = new List<GOAPAction>(currentPlan) { action };
                     float newCost = currentCost + action.Cost;
 
                     openList.Put((newPlan, newState, newCost), newCost);
                 }
-                Debug.Log("7");
-
             }
-            Debug.Log("8");
-
         }
 
         return bestPlan;
 
+    }
         /*
         var plan = availableActions.Aggregate((plan: new List<GOAPAction>(),currentState:worldStateCopy)
             ,(currentPlan, currentAction) =>
@@ -120,7 +116,6 @@ public class GOAPPlanner
         yield return new WaitForSeconds(0.01f);
 
    */
-    }
     private bool IsGoalAchieved(Dictionary<string, object> worldStateCopy, Dictionary<string, object> goal)
     {
         foreach (var condition in goal)
@@ -143,6 +138,7 @@ public class GOAPPlanner
                 return false;
             }
         }
+        Debug.Log("se cumplio");
         return true;
     }
 }

@@ -18,6 +18,8 @@ public class ChaseAction : GOAPAction
         Preconditions.Add("PlayerDetected", true);
         Preconditions.Add("EnoughEnergy", true);
         Preconditions.Add("PlayerAlive", true);
+        Preconditions.Add("ReduceDistance", false);
+        Preconditions.Add("PlayerInRange", false);
 
 
         // Efectos que produce esta acción
@@ -37,9 +39,13 @@ public class ChaseAction : GOAPAction
             return false;
         }
 
-        if (currentWorldState.ContainsKey("PlayerDetected") && currentWorldState["PlayerDetected"] is bool)
+        if (currentWorldState.ContainsKey("PlayerDetected") && (bool)currentWorldState["PlayerDetected"]
+            && currentWorldState.ContainsKey("EnoughEnergy") && (bool)currentWorldState["EnoughEnergy"]
+            && currentWorldState.ContainsKey("PlayerAlive") && (bool)currentWorldState["PlayerAlive"]
+            && currentWorldState.ContainsKey("ReduceDistance") && !(bool)currentWorldState["ReduceDistance"]
+            && currentWorldState.ContainsKey("PlayerInRange") && !(bool)currentWorldState["PlayerInRange"])
         {
-            return (bool)currentWorldState["PlayerDetected"];
+            return true;
         }
 
         return false;
