@@ -22,7 +22,6 @@ public class SearchAction : GOAPAction
     public override Dictionary<string, object> ApplyEffects(Dictionary<string, object> currentWorldState)
     {
         Debug.Log("Executing SearchAction...");
-        worldState.SetState("PlayerDetected", true);
 
         return base.ApplyEffects(currentWorldState);
     }

@@ -31,8 +31,6 @@ public class TeleportAction : GOAPAction
     {
         Debug.Log("Executing TeleportAction: Teleporting to player's dimension...");
 
-
-
         // Gasta energía para ejecutar la acción
         return base.ApplyEffects(worldState);
 

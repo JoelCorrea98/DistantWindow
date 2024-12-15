@@ -42,6 +42,10 @@ public class AttackAction : GOAPAction
         {
             // Reducir la vida del jugador
             playerLife -= 1; // Aquí defines cuánto daño quieres causar
+            if(playerLife < 0)
+            {
+                playerLife = 0;
+            }
             worldState["PlayerLife"] = playerLife;
 
             Debug.Log($"Simulated PlayerLife after damage: {playerLife}");

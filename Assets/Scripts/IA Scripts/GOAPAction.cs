@@ -26,13 +26,14 @@ public abstract class GOAPAction
         return true;
     }
 
-    // Método para aplicar los efectos al estado del mundo
-    public virtual Dictionary<string, object> ApplyEffects(Dictionary<string, object> worldState)
+    // Método para aplicar los efectos al estado del mundo etereo 
+    public virtual Dictionary<string,object> ApplyEffects(Dictionary<string, object> worldState)
     {
         foreach (var effect in Effects)
         {
             worldState[effect.Key] = effect.Value;
         }
+
         return worldState;
     }
 }

@@ -10,7 +10,7 @@ public class GridSystem : MonoBehaviour
     public LayerMask ObstacleLayer;
     public Transform ReferencePoint; // Punto de referencia para la grilla
 
-    private Node[,] grid;
+    private T[,] grid;
 
     private void Start()
     {
@@ -25,7 +25,7 @@ public class GridSystem : MonoBehaviour
             return;
         }
 
-        grid = new Node[GridSizeX, GridSizeZ];
+        grid = new T[GridSizeX, GridSizeZ];
 
         Vector3 origin = ReferencePoint.position; // Usamos la posición del punto de referencia
 
@@ -45,7 +45,7 @@ public class GridSystem : MonoBehaviour
 
                 if (isWalkable)
                 {
-                    grid[x, z] = new Node(worldPosition);
+                    grid[x, z] = new T(worldPosition);
                 }
                 else
                 {
@@ -63,7 +63,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int z = 0; z < GridSizeZ; z++)
             {
-                Node node = grid[x, z];
+                T node = grid[x, z];
                 if (node == null) continue;
 
                 for (int dx = -1; dx <= 1; dx++)
@@ -77,7 +77,7 @@ public class GridSystem : MonoBehaviour
 
                         if (neighborX >= 0 && neighborX < GridSizeX && neighborZ >= 0 && neighborZ < GridSizeZ)
                         {
-                            Node neighbor = grid[neighborX, neighborZ];
+                            T neighbor = grid[neighborX, neighborZ];
                             if (neighbor != null)
                             {
                                 node.Neighbors.Add(neighbor);
@@ -89,7 +89,7 @@ public class GridSystem : MonoBehaviour
         }
     }
 
-    public Node GetClosestNode(Vector3 position)
+    public T GetClosestNode(Vector3 position)
     {
         int x = Mathf.RoundToInt((position.x - ReferencePoint.position.x) / NodeSize);
         int z = Mathf.RoundToInt((position.z - ReferencePoint.position.z) / NodeSize);
@@ -109,7 +109,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int z = 0; z < GridSizeZ; z++)
             {
-                Node node = grid[x, z];
+                T node = grid[x, z];
                 if (node != null)
                 {
                     // Color para nodos caminables

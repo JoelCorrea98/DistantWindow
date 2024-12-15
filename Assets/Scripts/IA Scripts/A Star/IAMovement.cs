@@ -5,7 +5,7 @@ using UnityEngine;
 public class AIMovement : MonoBehaviour
 {
     public GridSystem gridSystem;
-    private List<Node> path;
+    private List<T> path;
     private int currentNodeIndex;
     public Vector3 CurrentTarget;
 
@@ -22,8 +22,8 @@ public class AIMovement : MonoBehaviour
 
     public void MoveTo(Vector3 targetPosition)
     {
-        Node startNode = gridSystem.GetClosestNode(transform.position);
-        Node endNode = gridSystem.GetClosestNode(targetPosition);
+        T startNode = gridSystem.GetClosestNode(transform.position);
+        T endNode = gridSystem.GetClosestNode(targetPosition);
 
         if (startNode == null || endNode == null)
         {

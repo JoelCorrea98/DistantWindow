@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class AStarPathfinding
 {
-    public static List<Node> FindPath(Node startNode, Node endNode)
+    public static List<T> FindPath(T startNode, T endNode)
     {
-        List<Node> openSet = new List<Node>();
-        HashSet<Node> closedSet = new HashSet<Node>();
-        Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-        Dictionary<Node, float> gScore = new Dictionary<Node, float>();
-        Dictionary<Node, float> fScore = new Dictionary<Node, float>();
+        List<T> openSet = new List<T>();
+        HashSet<T> closedSet = new HashSet<T>();
+        Dictionary<T, T> cameFrom = new Dictionary<T, T>();
+        Dictionary<T, float> gScore = new Dictionary<T, float>();
+        Dictionary<T, float> fScore = new Dictionary<T, float>();
 
         openSet.Add(startNode);
         gScore[startNode] = 0;
@@ -18,7 +18,7 @@ public class AStarPathfinding
 
         while (openSet.Count > 0)
         {
-            Node current = openSet[0];
+            T current = openSet[0];
             foreach (var node in openSet)
             {
                 if (fScore[node] < fScore[current])
@@ -35,7 +35,7 @@ public class AStarPathfinding
             openSet.Remove(current);
             closedSet.Add(current);
 
-            foreach (Node neighbor in current.Neighbors)
+            foreach (T neighbor in current.Neighbors)
             {
                 if (closedSet.Contains(neighbor)) continue;
 
@@ -59,14 +59,14 @@ public class AStarPathfinding
         return null; // No se encontró un camino
     }
 
-    private static float Heuristic(Node a, Node b)
+    private static float Heuristic(T a, T b)
     {
         return Vector3.Distance(a.Position, b.Position);
     }
 
-    private static List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
+    private static List<T> ReconstructPath(Dictionary<T, T> cameFrom, T current)
     {
-        List<Node> path = new List<Node> { current };
+        List<T> path = new List<T> { current };
         while (cameFrom.ContainsKey(current))
         {
             current = cameFrom[current];

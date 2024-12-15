@@ -16,6 +16,7 @@ public class IAController : MonoBehaviour
     public EnergyManager energyManager;
     public AIStateController StateController;
 
+    private Dictionary<GOAPAction, AIState> _aiActions = new Dictionary<GOAPAction, AIState>();
     private void Start()
     {
         // Inicializar el WorldState
@@ -46,12 +47,16 @@ public class IAController : MonoBehaviour
         WorldState.DebugState();
 
         // Registrar las acciones
-        AvailableActions.Add(new SearchAction(WorldState));
-        AvailableActions.Add(new ChaseAction(WorldState));
-        AvailableActions.Add(new AttackAction(WorldState));
-        AvailableActions.Add(new TeleportAction(WorldState));
-        AvailableActions.Add(new BlockAction(WorldState));
+        _aiActions.Add(new SearchAction(WorldState), AIState.Search);
+        _aiActions.Add(new ChaseAction(WorldState), AIState.Chase);
+        _aiActions.Add(new AttackAction(WorldState), AIState.Attack);
+        _aiActions.Add(new TeleportAction(WorldState), AIState.Teleport);
+        _aiActions.Add(new BlockAction(WorldState), AIState.Block);
 
+        foreach (var aiAction in _aiActions)
+        {
+            AvailableActions.Add(aiAction.Key);
+        }
         // Generar un plan inicial
         GeneratePlan();
     }
@@ -78,22 +83,14 @@ public class IAController : MonoBehaviour
             {
                 Debug.Log("Entre al ejecute plan y tengo las condiciones de la accion " + currentAction);
 
-                // Cambiar el estado en la máquina de estados
-                if (currentAction is SearchAction)
-                    StateController.ChangeState(AIState.Search);
-                //Debug.Log("GOAP Seteo Search como estado actual");
-                else if (currentAction is ChaseAction)
-                    StateController.ChangeState(AIState.Chase);
-                else if (currentAction is AttackAction)
-                    StateController.ChangeState(AIState.Attack);
-                else if (currentAction is TeleportAction)
-                    StateController.ChangeState(AIState.Teleport);
-                else if (currentAction is BlockAction)
-                    StateController.ChangeState(AIState.Block);
 
+                // Cambiar el estado en la máquina de estados
+                if (_aiActions.ContainsKey(currentAction))
+                {
+                    StateController.ChangeState(_aiActions[currentAction]);
+                }
                 // Ejecutar la acción
                 currentPlan.Dequeue();
-                currentAction.ApplyEffects(currentState);
             }
         }
         else
@@ -111,11 +108,11 @@ public class IAController : MonoBehaviour
         var currentState = WorldState.GetAllStates();
 
         // Generar un plan
-        var plan = planner.Plan(currentState, goal, AvailableActions);
+        var plan = planner.GeneratePlan(currentState, goal, AvailableActions);
         if (plan != null)
         {
             currentPlan = new Queue<GOAPAction>(plan);
-            Debug.Log("Plan generated successfully.");
+            Debug.Log("Plan generated successfully, plan count steps: " + currentPlan.Count);
         }
         else
         {

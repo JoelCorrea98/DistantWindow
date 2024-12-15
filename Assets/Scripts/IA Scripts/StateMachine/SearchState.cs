@@ -22,11 +22,7 @@ public class SearchState : AIStateBase
         if (controller.VisionDetector.IsPlayerDetected || controller.GlobalDetector.IsPlayerDetected)
         {
             Debug.Log("Player detected during search!");
-            controller.worldState.SetState("PlayerDetected", true); // Notificar al WorldState
-            controller.EnergyManager.AddEnergy(2); // Agregar energía si es necesario
-
-            controller.iAController.GeneratePlan();
-            controller.iAController.PlanExecute();
+            controller.iAController.PlanExecute(); // ya hice la accion
         }
     }
 
@@ -64,6 +60,8 @@ public class SearchState : AIStateBase
     {
         Debug.Log("Exiting Search State");
         // Limpiar lógica si es necesario
+        controller.worldState.SetState("PlayerDetected", true); // Notificar al WorldState
+        controller.EnergyManager.AddEnergy(2); // Agregar energía si es necesario
     }
 
     private Vector3 GetRandomPosition()
