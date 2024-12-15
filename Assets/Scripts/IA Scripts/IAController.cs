@@ -46,6 +46,13 @@ public class IAController : MonoBehaviour
         WorldState.SetState("ReduceDistance", false);
         WorldState.DebugState();
 
+        //Estados que simplifican algunos datos de arriba
+        WorldState.SetState("SameDimension", true);
+        WorldState.SetState("PlayerAlive", true);
+        WorldState.SetState("PlayerLowEnergy", false);
+
+
+
         // Registrar las acciones
         _aiActions.Add(new SearchAction(WorldState), AIState.Search);
         _aiActions.Add(new ChaseAction(WorldState), AIState.Chase);

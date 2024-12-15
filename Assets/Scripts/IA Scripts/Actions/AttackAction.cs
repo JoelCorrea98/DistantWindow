@@ -12,10 +12,11 @@ public class AttackAction : GOAPAction
         this._worldState = worldState;
 
         // Precondiciones para ejecutar la acción
-        Preconditions.Add("PlayerInRange", true);
+        Preconditions.Add("PlayerAlive", true);
         Preconditions.Add("SameDimension", true);
+        Preconditions.Add("PlayerInRange", true);
+        Preconditions.Add("PlayerDetected", true);
         Preconditions.Add("EnoughEnergy", true);
-        Preconditions.Add("ReduceDistance", true);
 
         // Efectos que produce la acción
         Effects.Add("PlayerHealthReduced", true);

@@ -11,7 +11,11 @@ public class TeleportAction : GOAPAction
         this.worldState = worldState;
 
         // Precondiciones para ejecutar la acción
+        Preconditions.Add("PlayerAlive", true);
+        Preconditions.Add("PlayerDetected", true);
+        Preconditions.Add("SameDimension", false);
         Preconditions.Add("EnoughEnergy", true);
+
 
         // Efectos que produce la acción
         Effects.Add("SameDimension", true);

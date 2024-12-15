@@ -16,7 +16,9 @@ public class ChaseAction : GOAPAction
 
         // Precondiciones para activar esta acción
         Preconditions.Add("PlayerDetected", true);
-        Preconditions.Add("PlayerDetected", false);
+        Preconditions.Add("EnoughEnergy", true);
+        Preconditions.Add("PlayerAlive", true);
+
 
         // Efectos que produce esta acción
         Effects.Add("ReduceDistance", true);

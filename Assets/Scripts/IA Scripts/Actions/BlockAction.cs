@@ -13,8 +13,10 @@ public class BlockAction : GOAPAction
 
 
         // Precondiciones para ejecutar la acción
-        Preconditions.Add("PlayerVulnerable", true);
+        Preconditions.Add("PlayerAlive", true);
         Preconditions.Add("EnoughEnergy", true);
+        Preconditions.Add("PlayerVulnerable", true);
+        Preconditions.Add("PlayerLowEnergy", true);
 
         // Efectos que produce la acción
         Effects.Add("PlayerBlocked", true);
