@@ -41,4 +41,8 @@ public class TeleportAction : GOAPAction
         Debug.LogWarning("Not enough energy to execute TeleportAction!");
         return worldState; // No se aplican efectos si no hay energía
     }
+    public override string GetName()
+    {
+        return "teleport";
+    }
 }

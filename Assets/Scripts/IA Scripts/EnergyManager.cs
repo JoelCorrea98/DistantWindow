@@ -50,6 +50,6 @@ public class EnergyManager : MonoBehaviour
         // Agregar energía y asegurarse de que no supere el máximo
         CurrentEnergy += amount;
         CurrentEnergy = Mathf.Clamp(CurrentEnergy, 0, MaxEnergy);
-        Debug.Log($"Energy added: {amount}. Current Energy: {CurrentEnergy}");
+       // Debug.Log($"Energy added: {amount}. Current Energy: {CurrentEnergy}");
     }
 }

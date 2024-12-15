@@ -49,7 +49,7 @@ public class AttackAction : GOAPAction
             }
             worldState["PlayerLife"] = playerLife;
 
-            Debug.Log($"Simulated PlayerLife after damage: {playerLife}");
+            //Debug.Log($"Simulated PlayerLife after damage: {playerLife}");
         }
         else
         {
@@ -61,6 +61,10 @@ public class AttackAction : GOAPAction
 
         // Retornar el estado actualizado
         return base.ApplyEffects(worldState);
+    }
+public override string GetName()
+{
+    return "attack";
     }
 }
 

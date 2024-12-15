@@ -36,12 +36,16 @@ public class SearchAction : GOAPAction
             return false;
         }
 
-        if (currentWorldState.ContainsKey("PlayerDetected") && currentWorldState["PlayerDetected"] is bool)
+        if (currentWorldState.ContainsKey("PlayerDetected") && !(bool)currentWorldState["PlayerDetected"] )
         {
-            return (bool)currentWorldState["PlayerDetected"];
+            return true;
         }
 
         Debug.LogWarning("Key 'PlayerDetected' not found or is not a boolean in currentWorldState");
         return false;
+    }
+    public override string GetName()
+    {
+        return "search";
     }
 }

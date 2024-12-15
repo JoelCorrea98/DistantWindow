@@ -36,4 +36,8 @@ public abstract class GOAPAction
 
         return worldState;
     }
+    public virtual string GetName()
+    {
+        return "GoapAction";
+    }
 }

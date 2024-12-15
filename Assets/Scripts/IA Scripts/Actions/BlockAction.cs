@@ -37,4 +37,8 @@ public class BlockAction : GOAPAction
         Debug.Log("Blocking the player...");
         return base.ApplyEffects(worldState);
     }
+    public override string GetName()
+    {
+        return "block";
+    }
 }

@@ -73,19 +73,30 @@ public class GOAPPlanner
                 bestPlan = currentPlan;
                 continue;
             }
-
             foreach (var action in availableActions)
             {
+                foreach (var item in currentState)
+                {
+                    Debug.Log("key: "+item.Key +" value: "+ item.Value);
+                }
                 if (action.ArePreconditionsMet(currentState))
                 {
-                    var newState = action.ApplyEffects(worldStateCopy);
+                    Debug.Log("6");
+
+                    Debug.Log("antes del applyeffects" +currentState["PlayerDetected"]);
+                    var newState = action.ApplyEffects(currentState);
+                    Debug.Log("después del applyeffects" + newState["PlayerDetected"]);
 
                     var newPlan = new List<GOAPAction>(currentPlan) { action };
                     float newCost = currentCost + action.Cost;
 
                     openList.Put((newPlan, newState, newCost), newCost);
                 }
+                Debug.Log("7");
+
             }
+            Debug.Log("8");
+
         }
 
         return bestPlan;

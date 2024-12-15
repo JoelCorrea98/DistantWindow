@@ -65,4 +65,8 @@ public class ChaseAction : GOAPAction
         float distanceToPlayer = Vector3.Distance(movement.transform.position, player.position);
         return distanceToPlayer < 1.5f; // Por ejemplo, cuando está a menos de 1.5 unidades
     }
+    public override string GetName()
+    {
+        return "chase";
+    }
 }

@@ -14,9 +14,10 @@ public class GlobalDetector : MonoBehaviour
     {
         if ((1 << other.gameObject.layer & targetLayer) != 0)
         {
-            Debug.Log($"Player entered {detectorName} detector!");
-            iaController.WorldState.SetState("PlayerDetected", true);
+            //Debug.Log($"Player entered {detectorName} detector!");
+            //iaController.WorldState.SetState("PlayerDetected", true);
             IsPlayerDetected = true;
+            iaController.NotifyPlayerDetected(true);
         }
     }
 
@@ -24,8 +25,9 @@ public class GlobalDetector : MonoBehaviour
     {
         if ((1 << other.gameObject.layer & targetLayer) != 0)
         {
-            Debug.Log($"Player left {detectorName} detector!");
+            //Debug.Log($"Player left {detectorName} detector!");
             IsPlayerDetected = false;
+            iaController.NotifyPlayerDetected(false);
             //iaController.WorldState.SetState("PlayerDetected", false);
         }
     }

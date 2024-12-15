@@ -118,12 +118,29 @@ public class IAController : MonoBehaviour
         var plan = planner.GeneratePlan(currentState, goal, AvailableActions);
         if (plan != null)
         {
+
             currentPlan = new Queue<GOAPAction>(plan);
+            
             Debug.Log("Plan generated successfully, plan count steps: " + currentPlan.Count);
+            int count = 0;
+            foreach (var step in currentPlan)
+            {
+
+                Debug.Log("plan:" + count +" "+ step.GetName());
+                count++;
+            }
+            
         }
         else
         {
             Debug.LogWarning("Failed to generate a plan.");
+        }
+    }
+    public void NotifyPlayerDetected(bool detected)
+    {
+        if ((bool)WorldState.GetState("PlayerDetected") != detected)
+        {
+            WorldState.SetState("PlayerDetected", detected);
         }
     }
 }
