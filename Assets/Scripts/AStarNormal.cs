@@ -98,18 +98,18 @@ public class AStarNormal<Node> where Node : class
         U.Log("OPEN SET " + state.open.Aggregate("", (a, x) => a + x.ToString() + "\n\n"));
         U.Log("CLOSED SET " + state.closed.Aggregate("", (a, x) => a + x.ToString() + "\n\n"));
         U.Log("CHOSEN CANDIDATE COST " + state.fs[candidate] + ":" + candidate.ToString());
-        if (state is AStarState<GoapState>)
+        if (state is AStarState<GOAPState>)
         {
             U.Log("SEQUENCE FOR CANDIDATE" +
                 U.Generate(state.current, n => state.previous[n])
                     .TakeWhile(x => x != null)
                     .Reverse()
-                    .Select(x => x as GoapState)
+                    .Select(x => x as GOAPState)
                     .Where(x => x != null && x.generatingAction != null)
                     .Aggregate("", (a, x) => a + "-->" + x.generatingAction.Name)
             );
 
-            var prevs = state.previous as Dictionary<GoapState, GoapState>;
+            var prevs = state.previous as Dictionary<GOAPState, GOAPState>;
             U.Log("Other candidate chains:\n"
                 + prevs
                     .Select(kv => kv.Key)
@@ -118,7 +118,7 @@ public class AStarNormal<Node> where Node : class
                         U.Generate(y, n => prevs[n])
                             .TakeWhile(x => x != null)
                             .Reverse()
-                            .Select(x => x as GoapState)
+                            .Select(x => x as GOAPState)
                             .Where(x => x != null && x.generatingAction != null)
                             .Aggregate("", (a2, x) => a2 + "-->" + x.generatingAction.Name + "(" + x.step + ")")
                         + " (COST: g" + (state.gs)[y as Node] + "   f" + state.fs[y as Node] + ")"

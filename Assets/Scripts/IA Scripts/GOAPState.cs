@@ -17,7 +17,7 @@ public class GOAPState : MonoBehaviour
         generatingAction = gen;
         worldState = new WorldState()
         {
-            values = new Dictionary<string, bool>() // Muy importane inicializarlo en este caso
+            values = new Dictionary<string, object>() 
         };
     }
 
@@ -56,14 +56,11 @@ public class GOAPState : MonoBehaviour
 }
 
 
-//Nuestro estado de mundo
-//Aca hay una mezcla de lo  anterior con lo nuevo, no necesariamente tiene que haber un diccionario aca adentro
 public struct WorldState
 {
     public int playerHP;
     public Dictionary<string, object> values;
 
-    //MUY IMPORTANTE TENER UN CLONE PARA NO TENER REFENCIAS A LO VIEJO
     public WorldState Clone()
     {
         return new WorldState()

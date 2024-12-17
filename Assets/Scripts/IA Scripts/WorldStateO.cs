@@ -34,7 +34,7 @@ public class WorldStateEntry
     }
 }
 
-public class WorldState : MonoBehaviour
+public class WorldStateO : MonoBehaviour
 {
     [SerializeField]
     private List<WorldStateEntry> state = new List<WorldStateEntry>();

@@ -6,11 +6,11 @@ using System;
 public class Goap : MonoBehaviour
 {
     //El satisfies y la heuristica ahora son Funciones externas
-	public static IEnumerable<GoapAction> Execute(GoapState from, GoapState to, Func<GoapState, bool> satisfies, Func<GoapState, float> h, IEnumerable<GoapAction> actions)
+	public static IEnumerable<GOAPAction> Execute(GOAPState from, GOAPState to, Func<GOAPState, bool> satisfies, Func<GOAPState, float> h, IEnumerable<GOAPAction> actions)
     {
         int watchdog = 200;
 
-        IEnumerable<GoapState> seq = AStarNormal<GoapState>.Run(
+        IEnumerable<GOAPState> seq = AStarNormal<GOAPState>.Run(
             from,
             to,
             (curr,goal)  => h (curr),
@@ -18,21 +18,22 @@ public class Goap : MonoBehaviour
             curr =>
             {
                 if (watchdog == 0)
-                    return Enumerable.Empty<AStarNormal<GoapState>.Arc>();
+                    return Enumerable.Empty<AStarNormal<GOAPState>.Arc>();
                 else
                     watchdog--;
 
                 //en este Where se evaluan las precondiciones, al ser un diccionario de <string,bool> solo se chequea que todas las variables concuerdes
                 //En caso de ser un Func<...,bool> se utilizaria ese func de cada estado para saber si cumple o no
                 return actions.Where(action => action.preconditions.All(kv => kv.In(curr.worldState.values)))
-                              .Where(a => a.Preconditions(curr)) // Agregue esto para chequear las precondiuciones puestas  en el Func, Al final deberia quedar solo esta
-                              .Aggregate(new FList<AStarNormal<GoapState>.Arc>(), (possibleList, action) =>
+                              .Where(a => (bool)a.Preconditions(curr))//nota camilo, acá lo castee a bool, pero puede que haya que tocar algo mas
+                              //nota ajena: Agregue esto para chequear las precondiuciones puestas  en el Func, Al final deberia quedar solo esta
+                              .Aggregate(new FList<AStarNormal<GOAPState>.Arc>(), (possibleList, action) =>
                               {
-                                  var newState = new GoapState(curr);
+                                  var newState = new GOAPState(curr);
                                   newState = action.Effects(newState); // se aplican lso effectos del Func
                                   newState.generatingAction = action;
                                   newState.step = curr.step+1;
-                                  return possibleList + new AStarNormal<GoapState>.Arc(newState, action.Cost);
+                                  return possibleList + new AStarNormal<GOAPState>.Arc(newState, action.Cost);
                               });
             });
 

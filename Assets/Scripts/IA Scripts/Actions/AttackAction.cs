@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AttackAction : GOAPAction
 {
+    /*
     private WorldState _worldState; // Referencia al estado del mundo
 
-    /*
     public AttackAction(WorldState worldState)
     {
         this._worldState = worldState;

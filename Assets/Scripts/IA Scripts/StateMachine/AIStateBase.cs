@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class AIStateBase
 {
     protected AIStateController controller;
-    public Dictionary<string, object> worldState;
+    public WorldState worldState;
     public AIStateBase(AIStateController controller)
     {
         this.controller = controller;

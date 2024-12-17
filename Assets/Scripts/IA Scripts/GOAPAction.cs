@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GOAPAction
+public class GOAPAction
 {
-    public Dictionary<string, bool> preconditions { get; private set; }
+    public Dictionary<string, object> preconditions { get; private set; }
 
-    public Func<AIStateBase, bool> Preconditions = delegate { return true; };
-    public Dictionary<string, bool> effects { get; private set; }
+    public Func<GOAPState, object> Preconditions = delegate { return true; };
+    public Dictionary<string, object> effects { get; private set; }
 
-    public Func<AIStateBase, AIStateBase> Effects;
+    public Func<GOAPState, GOAPState> Effects;
 
     public float Cost { get; private set; }
 
@@ -21,8 +21,8 @@ public abstract class GOAPAction
 
         this.Name = name;
         Cost = 1f;
-        preconditions = new Dictionary<string, bool>();
-        effects = new Dictionary<string, bool>();
+        preconditions = new Dictionary<string, object>();
+        effects = new Dictionary<string, object>();
 
         //Para que funcione en la mezcla se hizo esto, pero se le podria settear a cada Action su propia logica de effect
         Effects = (s) =>
@@ -44,24 +44,24 @@ public abstract class GOAPAction
         this.Cost = cost;
         return this;
     }
-    public GOAPAction Pre(string s, bool value)
+    public GOAPAction Pre(string s, object value)
     {
         preconditions[s] = value;
         return this;
     }
 
-    public GOAPAction Pre(Func<AIStateBase, bool> p)
+    public GOAPAction Pre(Func<GOAPState, object> p)
     {
         Preconditions = p;
         return this;
     }
-    public GOAPAction Effect(string s, bool value)
+    public GOAPAction Effect(string s, object value)
     {
         effects[s] = value;
         return this;
     }
 
-    public GOAPAction Effect(Func<AIStateBase, AIStateBase> e)
+    public GOAPAction Effect(Func<GOAPState, GOAPState> e)
     {
         Effects = e;
         return this;
