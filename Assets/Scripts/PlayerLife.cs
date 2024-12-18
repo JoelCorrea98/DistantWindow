@@ -13,18 +13,14 @@ public class PlayerLife : MonoBehaviour
     public delegate void OnPlayerDeath();
     public event OnPlayerDeath PlayerDied;
 
-    private WorldState worldState;
 
     private void Start()
     {
         currentLife = MaxLife; // Inicializar vida al máximo
-        worldState = FindObjectOfType<WorldState>();
 
-        if (worldState != null)
-        {
-            // Configurar la vida inicial en el WorldState
-            worldState.SetState("PlayerLife", currentLife);
-        }
+        // Configurar la vida inicial en el WorldState
+        WorldStateManager.instance.SetState("PlayerLife", currentLife);
+
 
         // Notificar la vida inicial
         LifeChanged?.Invoke(currentLife, MaxLife);
@@ -35,16 +31,13 @@ public class PlayerLife : MonoBehaviour
         currentLife -= damage;
         currentLife = Mathf.Max(0, currentLife); // Evitar valores negativos
 
-        var playerLife = (int)worldState.GetState("PlayerLife");
-        worldState.SetState("PlayerLife", playerLife - damage);
+        
+        WorldStateManager.instance.SetState("PlayerLife", currentLife);
+
 
         Debug.Log($"Player took {damage} damage. Current life: {currentLife}");
 
-        // Actualizar el estado del mundo
-        if (worldState != null)
-        {
-            worldState.SetState("PlayerLife", currentLife);
-        }
+       
 
         // Notificar cambio de vida
         LifeChanged?.Invoke(currentLife, MaxLife);
@@ -64,11 +57,7 @@ public class PlayerLife : MonoBehaviour
 
         Debug.Log($"Player healed {healAmount}. Current life: {currentLife}");
 
-        // Actualizar el estado del mundo
-        if (worldState != null)
-        {
-            worldState.SetState("PlayerLife", currentLife);
-        }
+        WorldStateManager.instance.SetState("PlayerLife", currentLife);
 
         // Notificar cambio de vida
         LifeChanged?.Invoke(currentLife, MaxLife);

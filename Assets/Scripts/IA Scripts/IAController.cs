@@ -8,12 +8,13 @@ using Random = UnityEngine.Random;
 
 public enum ActionEntity
 {
-    Kill,
-    PickUp,
-    NextStep,
+    Search,
+    Chase,
+    Attack,
     FailedStep,
-    Open,
-    Success
+    NextStep,
+    Teleport,
+    Block,
 }
 public class IAController : MonoBehaviour
 {
@@ -51,15 +52,11 @@ public class IAController : MonoBehaviour
 
     private void PerformAttack()
     {
-        Debug.Log("PerformAttack", other.gameObject);
+        Debug.Log("PerformAttack"); //acá podría hacer la logica de ataque
         if (_target == null) return;
 
-        var mace = _ent.items.FirstOrDefault(it => it.type == ItemType.Mace);
-        if (mace)
+        if (true) //podríamos chequear si le pegó o no al player
         {
-            other.Kill();
-            if (other.type == ItemType.Door)
-                Destroy(_ent.Removeitem(mace).gameObject);
             _fsm.Feed(ActionEntity.NextStep);
         }
         else
@@ -89,56 +86,66 @@ public class IAController : MonoBehaviour
         var attack = new State<ActionEntity>("Attack");
         var teleport = new State<ActionEntity>("Teleport");
         var block = new State<ActionEntity>("Block");
+        var bridgeStep = new State<ActionEntity>("BridgeStep"); // agregue estos 2, el bridge le permite pasar de un estado a otro como en el ejemplo
+        var failStep = new State<ActionEntity>("FailStep");//para que cuando falla que cambie al fail y formule un nuevo plan
 
 
-        kill.OnEnter += a => {
-            _ent.GoTo(_target.transform.position);
-            _ent.OnHitItem += PerformAttack;
+        search.OnEnter += a => 
+        {
+            //logica del search.OnEnter
+        };
+        search.OnUpdate += () =>
+        {
+            //logica de search.OnUpdate
+        };
+        search.OnExit += a =>
+        {
+            //logica del search.OnExit
         };
 
-        kill.OnExit += a => _ent.OnHitItem -= PerformAttack;
+        failStep.OnEnter += a => 
+        {
+            //logica del failStep.OnEnter
+        };
+        failStep.OnUpdate += () =>
+        {
+            //logica del failStep.OnUpdate
+        };
+        failStep.OnExit += a =>
+        {
+            //logica del failStep.OnExit
+        };
 
-        failStep.OnEnter += a => { _ent.Stop(); Debug.Log("Plan failed"); };
-
-        pickup.OnEnter += a => { _ent.GoTo(_target.transform.position); _ent.OnHitItem += PerformPickUp; };
-        pickup.OnExit += a => _ent.OnHitItem -= PerformPickUp;
-
-        open.OnEnter += a => { _ent.GoTo(_target.transform.position); _ent.OnHitItem += PerformOpen; };
-        open.OnExit += a => _ent.OnHitItem -= PerformOpen;
-
+       
         bridgeStep.OnEnter += a => {
-            var step = _plan.FirstOrDefault();
+            var step = _Currentplan.FirstOrDefault();
             if (step != null)
             {
 
-                _plan = _plan.Skip(1);
-                var oldTarget = _target;
-                _target = step.Item2;
-                if (!_fsm.Feed(step.Item1))
-                    _target = oldTarget;
+                _Currentplan = _Currentplan.Skip(1).ToList();
+                _fsm.Feed(ActionEntity.NextStep);
             }
             else
             {
-                _fsm.Feed(ActionEntity.Success);
+                // aca podríamos poner un estado de que gano (se pone a baiar o algo) 
             }
         };
 
-        success.OnEnter += a => { Debug.Log("Success"); };
-        success.OnUpdate += () => { _ent.Jump(); };
 
         StateConfigurer.Create(any)
             .SetTransition(ActionEntity.NextStep, bridgeStep)
-            .SetTransition(ActionEntity.FailedStep, idle)
+            .SetTransition(ActionEntity.FailedStep, failStep)
             .Done();
 
         StateConfigurer.Create(bridgeStep)
-            .SetTransition(ActionEntity.Kill, kill)
-            .SetTransition(ActionEntity.PickUp, pickup)
-            .SetTransition(ActionEntity.Open, open)
-            .SetTransition(ActionEntity.Success, success)
+            .SetTransition(ActionEntity.Search, search)
+            .SetTransition(ActionEntity.Chase, chase)
+            .SetTransition(ActionEntity.Attack, attack)
+            .SetTransition(ActionEntity.Teleport, teleport)
+            .SetTransition(ActionEntity.Block, block)
             .Done();
 
-        _fsm = new EventFSM<ActionEntity>(idle, any);
+        _fsm = new EventFSM<ActionEntity>(search);
     }
 
     public void ChosePlan(List<List<ActionEntity>> plans, List <float> costs)

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+    /*
 public class BlockAction : GOAPAction
 {
-    /*
     private WorldState worldState; // Referencia al estado del mundo
 
 
@@ -42,5 +42,5 @@ public class BlockAction : GOAPAction
     {
         return "block";
     }
-    */
 }
+    */

@@ -17,7 +17,8 @@ public class GlobalDetector : MonoBehaviour
             //Debug.Log($"Player entered {detectorName} detector!");
             //iaController.WorldState.SetState("PlayerDetected", true);
             IsPlayerDetected = true;
-            iaController.NotifyPlayerDetected(true);
+            WorldStateManager.instance.SetState("PlayerDetected", true);
+            //iaController.NotifyPlayerDetected(true);
         }
     }
 
@@ -27,7 +28,8 @@ public class GlobalDetector : MonoBehaviour
         {
             //Debug.Log($"Player left {detectorName} detector!");
             IsPlayerDetected = false;
-            iaController.NotifyPlayerDetected(false);
+            WorldStateManager.instance.SetState("PlayerDetected", false);
+            //iaController.NotifyPlayerDetected(false);
             //iaController.WorldState.SetState("PlayerDetected", false);
         }
     }

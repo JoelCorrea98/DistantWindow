@@ -58,7 +58,9 @@ public class VisionDetector : MonoBehaviour
         {
             //iaController.WorldState.SetState("PlayerDetected", true);
             IsPlayerDetected = true;
-            iaController.NotifyPlayerDetected(true);
+            //iaController.NotifyPlayerDetected(true);
+            WorldStateManager.instance.SetState("PlayerDetected", true);
+
         }
     }
 
@@ -67,7 +69,8 @@ public class VisionDetector : MonoBehaviour
         if ((1 << other.gameObject.layer & targetLayer) != 0)
         {
             IsPlayerDetected = false;
-            iaController.NotifyPlayerDetected(false);
+            WorldStateManager.instance.SetState("PlayerDetected", false);
+            //iaController.NotifyPlayerDetected(false);
 
             //iaController.WorldState.SetState("PlayerDetected", false);
         }

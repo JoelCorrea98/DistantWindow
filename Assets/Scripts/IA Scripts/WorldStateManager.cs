@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+using static UnityEngine.Rendering.DebugUI;
+using System.Runtime.CompilerServices;
+/*
 [System.Serializable]
 public class WorldStateEntry
 {
@@ -33,51 +35,69 @@ public class WorldStateEntry
         ValueAsString = value.ToString();
     }
 }
-
-public class WorldStateO : MonoBehaviour
+*/
+public class WorldStateManager : MonoBehaviour
 {
+    /*
     [SerializeField]
     private List<WorldStateEntry> state = new List<WorldStateEntry>();
+    */
+    public static WorldStateManager instance;
+    private GOAPState _worldState;
 
-    // Agregar o actualizar una entrada
-    public void SetState(string key, object value)
+
+
+    private void Awake()
     {
-        var entry = state.Find(e => e.Key == key);
-        if (entry != null)
+        if (instance == null)
         {
-            entry.SetValue(value);
+            instance = this;
+            _worldState = new GOAPState();
+            _worldState.worldState.values.Add("PlayerAlive", true); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
         }
         else
         {
-            var newEntry = new WorldStateEntry { Key = key };
-            newEntry.SetValue(value);
-            state.Add(newEntry);
+            Destroy(gameObject);
+        }
+    }
+    // Agregar o actualizar una entrada
+    public void SetState(string key, object value)
+    {
+        if (!_worldState.worldState.values.ContainsKey(key))
+        {
+            _worldState.worldState.values.Add(key, value);
+        }
+        else
+        {
+            _worldState.worldState.values[key] = value;
         }
     }
 
     // Obtener un valor del estado
     public object GetState(string key)
     {
-        var entry = state.Find(e => e.Key == key);
-        return entry != null ? entry.GetValue() : null;
+        if (_worldState.worldState.values.ContainsKey(key))
+        {
+           return  _worldState.worldState.values[key];
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public Dictionary<string, object> GetAllStates()
+    public GOAPState GetAllStates()
     {
-        var stateDictionary = new Dictionary<string, object>();
-        foreach (var entry in state)
-        {
-            stateDictionary[entry.Key] = entry.GetValue();
-        }
-        return stateDictionary;
+        GOAPState currentWorldState = _worldState;
+        return currentWorldState;
     }
 
     // Depuración para mostrar el estado completo
     public void DebugState()
     {
-        foreach (var entry in state)
+        foreach (var entry in _worldState.worldState.values)
         {
-            Debug.Log($"Key: {entry.Key}, Value: {entry.ValueAsString}, Type: {entry.ValueType}");
+            Debug.Log($"Key: {entry.Key}, Value: {entry.Value.ToString()}, Type: {entry.Value.GetType()}");
         }
     }
 }

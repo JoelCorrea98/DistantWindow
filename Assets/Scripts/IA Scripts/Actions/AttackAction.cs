@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+    /*
 public class AttackAction : GOAPAction
 {
-    /*
     private WorldState _worldState; // Referencia al estado del mundo
 
     public AttackAction(WorldState worldState)
@@ -66,6 +66,6 @@ public override string GetName()
 {
     return "attack";
     }
-    */
 }
+    */
 

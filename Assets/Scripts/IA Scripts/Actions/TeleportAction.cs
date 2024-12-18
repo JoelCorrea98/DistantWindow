@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+    /*
 public class TeleportAction : GOAPAction
 {
-    /*
     private WorldState worldState; // Referencia al estado del mundo
 
     public TeleportAction(WorldState worldState)
@@ -46,5 +46,5 @@ public class TeleportAction : GOAPAction
     {
         return "teleport";
     }
-    */
 }
+    */

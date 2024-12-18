@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+    /*
 public class ChaseAction : GOAPAction
 {
-    /*
     private AIMovement movement;  // Referencia al componente de movimiento
     private Transform player;     // Referencia al jugador
     private WorldState worldState; // Referencia al estado del mundo
@@ -76,5 +76,5 @@ public class ChaseAction : GOAPAction
     {
         return "chase";
     }
-    */
 }
+    */
