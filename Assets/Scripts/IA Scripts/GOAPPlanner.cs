@@ -21,7 +21,7 @@ public class GOAPPlanner : MonoBehaviour
 
         //por lo pronto procedo como si estuviera xd
     }
-    private IEnumerator GeneratePlan(GOAPState goal)
+    public IEnumerator GeneratePlan(GOAPState goal)
     {
         yield return new WaitForSeconds(0.2f);
         var observedState = new Dictionary<string, object>();
@@ -48,8 +48,15 @@ public class GOAPPlanner : MonoBehaviour
         };
         Func<GOAPState, bool> objectice = (curr) =>
         {
-            string key = "PlayerAlive"; //esto podría ser PlayerHP o PlayerLife
-            return curr.worldState.values.ContainsKey(key) && (bool)curr.worldState.values[key];
+            foreach (var condition in goal.worldState.values)
+            {
+                if (!curr.worldState.values.ContainsKey(condition.Key) ||
+                    curr.worldState.values[condition.Key] != condition.Value)
+                {
+                    return false;
+                }
+            }
+            return true;
         };
         var actDict = new Dictionary<string, FSMInputs>() //en vez de FSMInputs vamos a usar el que le hayas declarado a la eventFSM
                                                           //aunque supongo que serán algo así, el FSMInput que cree en este codigo es provisional
