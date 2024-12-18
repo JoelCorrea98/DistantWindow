@@ -160,14 +160,22 @@ public class IAController : MonoBehaviour
     {
         _plans.Add(plan);
         _Costs.Add(cost);
+        ChosePlan(_plans, _Costs);
     }
 
     public void DefineNewPlan()
     {
         _plans.Clear();
         _Costs.Clear();
-        planner.
-        StartCoroutine(planner.GeneratePlan());
+        GOAPState goal = new GOAPState();
+        GOAPState goalEnergy = new GOAPState();
+        //HACER .ADD SI FALLA!!!
+        goal.worldState.values["PlayerAlive"] = false;
+        StartCoroutine(planner.GeneratePlan(goal));
+
+        goalEnergy.worldState.values["PlayerLowEnergy"] = true;
+        StartCoroutine(planner.GeneratePlan(goalEnergy));
+
     }
 
     private void Update()
