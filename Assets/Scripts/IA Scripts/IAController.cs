@@ -26,16 +26,38 @@ public class IAController : MonoBehaviour
     private List<float> _Costs;
 
     public Transform _target;
+    public GameObject player;
     public AIMovement movement;
     public VisionDetector visionDetector; // Detector de visión adjunto a la IA
     public GlobalDetector globalDetector; // Detector global opcional
     public EnergyManager energyManager;
     public GOAPPlanner planner;
 
+    //Atack
+    private bool isAttacking = false; // Para evitar ataques simultáneos
+    private bool attackSuccessful = false; // Indica si el ataque fue exitoso
+    public float attackDelay = 1.5f; // Tiempo de preparación del ataque
+    public int attackDamage = 10; // Daño que inflige el ataque
+
+
+    public LayerMask playerLayer; // Capa del jugador
+    public Collider attackCollider; // Collider que usará el ataque
+
+    //Block
+    public IABlockHability blockHability;
 
     private void PerformSearch()
     {
         if (_target == null) return;
+
+        Movement();
+
+        // Verificar si el jugador ha sido detectado
+        if (visionDetector.IsPlayerDetected || globalDetector.IsPlayerDetected)
+        {
+            Debug.Log("Player detected during search!");
+            DefineNewPlan(); // ya hice la accion
+        }
 
         _fsm.Feed(ActionEntity.NextStep);
     }
@@ -55,6 +77,12 @@ public class IAController : MonoBehaviour
         Debug.Log("PerformAttack"); //acá podría hacer la logica de ataque
         if (_target == null) return;
 
+        
+        if (isAttacking) return; // Si ya está atacando, salir
+           
+        StartCoroutine(PerformCoRAttack());
+        
+
         if (true) //podríamos chequear si le pegó o no al player
         {
             _fsm.Feed(ActionEntity.NextStep);
@@ -66,6 +94,8 @@ public class IAController : MonoBehaviour
     private void PerformTeleport()
     {
         if (_target == null) return;
+
+        TeleportCloserToTarget();
 
         _fsm.Feed(ActionEntity.NextStep);
     }
@@ -93,16 +123,78 @@ public class IAController : MonoBehaviour
         search.OnEnter += a => 
         {
             //logica del search.OnEnter
+            energyManager.SpendEnergy(1);
         };
         search.OnUpdate += () =>
         {
             //logica de search.OnUpdate
+            PerformSearch();
         };
         search.OnExit += a =>
         {
             //logica del search.OnExit
         };
-
+        /*--------------------------------*/
+        chase.OnEnter += a =>
+        {
+            //logica del search.OnEnter
+            energyManager.SpendEnergy(2);
+        };
+        chase.OnUpdate += () =>
+        {
+            //logica de search.OnUpdate
+            PerformChase();
+        };
+        chase.OnExit += a =>
+        {
+            //logica del search.OnExit
+        };
+        /*--------------------------------*/
+        attack.OnEnter += a =>
+        {
+            //logica del search.OnEnter
+            energyManager.SpendEnergy(2);
+        };
+        attack.OnUpdate += () =>
+        {
+            //logica de search.OnUpdate
+            PerformAttack();
+        };
+        attack.OnExit += a =>
+        {
+            //logica del search.OnExit
+        };
+        /*--------------------------------*/
+        block.OnEnter += a =>
+        {
+            //logica del search.OnEnter
+            energyManager.SpendEnergy(4);
+            blockHability.SpawnClosestObjects(_target.transform.position);
+        };
+        block.OnUpdate += () =>
+        {
+            //logica de search.OnUpdate
+        };
+        block.OnExit += a =>
+        {
+            //logica del search.OnExit
+        };
+        /*--------------------------------*/
+        teleport.OnEnter += a =>
+        {
+            //logica del search.OnEnter
+            energyManager.SpendEnergy(4);
+            PerformTeleport();
+        };
+        teleport.OnUpdate += () =>
+        {
+            //logica de search.OnUpdate
+        };
+        teleport.OnExit += a =>
+        {
+            //logica del search.OnExit
+        };
+        /*--------------------------------*/
         failStep.OnEnter += a => 
         {
             //logica del failStep.OnEnter
@@ -146,6 +238,11 @@ public class IAController : MonoBehaviour
             .Done();
 
         _fsm = new EventFSM<ActionEntity>(search);
+    }
+
+    private void Start()
+    {
+        DefineNewPlan();
     }
 
     public void ChosePlan(List<List<ActionEntity>> plans, List <float> costs)
@@ -225,6 +322,73 @@ public class IAController : MonoBehaviour
     {
         // Generar una posición aleatoria dentro de un rango
         return new Vector3(Random.Range(0, 40), 0, Random.Range(0, 40));
+    }
+
+    private IEnumerator PerformCoRAttack()
+    {
+        isAttacking = true;
+        attackSuccessful = false; // Reiniciar el estado del ataque
+
+        // Simular preparación del ataque
+        yield return new WaitForSeconds(attackDelay);
+
+        // Activar el collider de ataque
+        if (attackCollider != null)
+        {
+            attackCollider.enabled = true;
+
+            // Comprobar si el collider toca al jugador
+            Collider[] hitColliders = Physics.OverlapBox(
+                attackCollider.bounds.center,
+                attackCollider.bounds.extents,
+                attackCollider.transform.rotation,
+                playerLayer
+            );
+
+            foreach (var hit in hitColliders)
+            {
+                if (hit.gameObject == player)
+                {
+                    // Si golpea al jugador, aplicar daño
+                    player.GetComponent<PlayerLife>()?.TakeDamage(attackDamage);
+                    attackSuccessful = true; // El ataque fue exitoso
+                    break;
+                }
+            }
+
+            // Desactivar el collider tras el ataque
+            attackCollider.enabled = false;
+        }
+
+        // Esperar un pequeño tiempo para finalizar el ataque
+        yield return new WaitForSeconds(0.1f);
+
+        isAttacking = false;
+        Debug.Log($"Ataque {(attackSuccessful ? "exitoso" : "fallido")}");
+    }
+
+    public void TeleportCloserToTarget()
+    {
+        if (_target == null)
+        {
+            Debug.LogWarning("No se ha asignado un jugador objetivo.");
+            return;
+        }
+
+        // Obtener la posición actual de la IA y del jugador
+        Vector3 currentPosition = transform.position;
+        Vector3 targetPosition = _target.position;
+
+        // Calcular la dirección hacia el jugador
+        Vector3 directionToTarget = targetPosition - currentPosition;
+
+        // Calcular la nueva posición, acercándose un 60% más al jugador
+        Vector3 newPosition = currentPosition + directionToTarget * 0.6f;
+
+        // Teletransportar la IA a la nueva posición
+        transform.position = newPosition;
+
+        Debug.Log($"Teletransportado a {newPosition}");
     }
     /// <summary>
     /// /////////////////////////////////////////////////////////////////////////////////

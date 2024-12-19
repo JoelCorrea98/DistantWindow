@@ -29,6 +29,16 @@ public class PlayerEnergy : MonoBehaviour
         }
     }
 
+    public void subtractAmountOfEnergy(float amount)
+    {
+        actualEnergy -= amount;
+        canvasRefresh();
+        if (actualEnergy <= 0)
+        {
+            LevelManager.Instance.scM.LoseScene();
+        }
+    }
+
     void canvasRefresh()
     {
         energyBar.fillAmount = actualEnergy / totalEnergy;

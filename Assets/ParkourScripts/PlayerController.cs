@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public float WallRunStraightForce;
 
     private float upforce;
-    private float straightforce;
+    public float straightforce;
 
     public float TrampolineImpulse;
     public float WallJumpUpVelocity;
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     public bool CantWallrunLeft;
     public bool CantWallrunRight;
     private bool canwallrun; // ensure that player can only wallrun once before needing to hit the ground again, can be modified for double wallruns
-    
+
     public bool IsParkour;
     private float t_parkour;
     private float chosenParkourMoveTime;
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.drag = drag_inair;
         }
-        if(WallRunning)
+        if (WallRunning)
         {
             rb.drag = drag_wallrun;
 
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
             IsParkour = true;
             chosenParkourMoveTime = VaultTime;
 
-            cameraAnimator.CrossFade("Vault",0.1f);
+            cameraAnimator.CrossFade("Vault", 0.1f);
         }
 
 
@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
             WallrunningRight = false;
         }
 
-        if (WallrunningLeft || WallrunningRight) 
+        if (WallrunningLeft || WallrunningRight)
         {
             WallRunning = true;
             rbfps.Wallrunning = true; // this stops the playermovement (refer to fpscontroller script)
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
         if (WallrunningRight)
         {
             cameraAnimator.SetBool("WallRight", true);
-           
+
             LevelManager.Instance.auM.PlayWallrun();
         }
         else
@@ -185,7 +185,7 @@ public class PlayerController : MonoBehaviour
         }
         if (WallrunningLeft)
         {
-           cameraAnimator.SetBool("WallLeft", true); //Wallrun camera tilt
+            cameraAnimator.SetBool("WallLeft", true); //Wallrun camera tilt
             LevelManager.Instance.auM.PlayWallrun();
         }
         else
@@ -194,7 +194,7 @@ public class PlayerController : MonoBehaviour
             //LevelManager.Instance.auM.StopWallrun();
         }
 
-        
+
 
         if (WallRunning)
         {
@@ -220,7 +220,7 @@ public class PlayerController : MonoBehaviour
                     WallrunningRight = false;
                 }
             }
-            if(rbfps.Grounded)
+            if (rbfps.Grounded)
             {
                 WallrunningLeft = false;
                 WallrunningRight = false;
@@ -230,5 +230,10 @@ public class PlayerController : MonoBehaviour
         {
             LevelManager.Instance.auM.StopWallrun();
         }
+    }
+
+    public void UpdateStaightForce(float newSpeed)
+    {
+        straightforce = newSpeed;
     }
 }
