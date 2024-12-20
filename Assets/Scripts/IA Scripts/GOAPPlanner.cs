@@ -191,11 +191,9 @@ public class GOAPPlanner : MonoBehaviour
             .Pre((gS) =>
             {
                 return  gS.worldState.values.ContainsKey("PlayerAlive") &&
-                       gS.worldState.values.ContainsKey("PlayerDetected") &&
                        gS.worldState.values.ContainsKey("SameDimension") &&
                        gS.worldState.values.ContainsKey("EnoughEnergy") &&
                         (bool)gS.worldState.values["PlayerAlive"] &&
-                        (bool)gS.worldState.values["PlayerDetected"] &&
                         !(bool)gS.worldState.values["SameDimension"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
             })
@@ -209,18 +207,45 @@ public class GOAPPlanner : MonoBehaviour
             .SetCost(3f)
             .Pre((gS) =>
             {
-                return gS.worldState.values.ContainsKey("PlayerAlive") &&
-                       gS.worldState.values.ContainsKey("EnoughEnergy") &&
-                       gS.worldState.values.ContainsKey("PlayerVulnerable") &&
-                       gS.worldState.values.ContainsKey("PlayerLowEnergy") &&
-                        (bool)gS.worldState.values["PlayerAlive"] &&
-                        (bool)gS.worldState.values["EnoughEnergy"] &&
-                        (bool)gS.worldState.values["PlayerVulnerable"] &&
-                        (bool)gS.worldState.values["PlayerLowEnergy"];
+
+                bool value = true;
+                if (!gS.worldState.values.ContainsKey("PlayerAlive") 
+                || !gS.worldState.values.ContainsKey("EnoughEnergy") 
+                || !gS.worldState.values.ContainsKey("PlayerEnergy"))
+                {
+                    value = false;
+	            }
+                else
+                {
+                    if (!(bool)gS.worldState.values["PlayerAlive"] 
+                    || !(bool)gS.worldState.values["EnoughEnergy"] 
+                    || (float)WorldStateManager.instance.GetState("PlayerEnergy") > 300 /2)
+                    {
+                        value = false;
+	                }
+	            }
+                        
+                return value;
             })
             .Effect((gS) =>
             {
                 gS.worldState.values["PlayerBlocked"]=true;
+
+
+                // Reducir la vida del jugador
+                if (gS.worldState.values.ContainsKey("PlayerEnergy"))
+                {
+                    int currentEnergy = (int)gS.worldState.values["PlayerEnergy"];
+                    gS.worldState.values["PlayerEnergy"] = Mathf.Max(0, currentEnergy - 25); // Reduce 25 punto de energia
+                }
+
+                 // Verificar si el jugador no tiene energia
+                if (gS.worldState.values.ContainsKey("PlayerEnergy") &&
+                (int)gS.worldState.values["PlayerEnergy"] <= 0)
+                {
+                     gS.worldState.values["PlayerLowEnergy"] = true;
+                }
+
                 return gS;
             })
 
