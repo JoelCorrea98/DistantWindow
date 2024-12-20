@@ -71,7 +71,6 @@ public class TimerChangeDimension : MonoBehaviour
 
     IEnumerator HoldChange()
     {
-        Debug.Log("Entre a la corrutina");
         yield return new WaitForSeconds(timeToChange);
         ChangeDimension();
         StartCoroutine(HoldChange());

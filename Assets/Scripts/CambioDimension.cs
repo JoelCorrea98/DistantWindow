@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum Dimension
 {
-    Blue, 
+    Red,
     Green,
-    Red
+    Blue 
 }
 public class CambioDimension : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class CambioDimension : MonoBehaviour
     public List<GameObject> objectDimensions;
     public List<Camera> cameraDimensions;
     public GameObject VolumeChangeDimension;
-
+    public Action changingDimension;
     public PlayerLook pl;
     public PlayerEnergy pe;
     public float energyToRemove = 10;
@@ -26,6 +27,7 @@ public class CambioDimension : MonoBehaviour
     {
         ChangeDimension(0, false);
         ObjectAvtivation();
+        WorldStateManager.instance.SetState("PlayerDimension", 0);
     }
     private void Update()
     {
@@ -56,22 +58,23 @@ public class CambioDimension : MonoBehaviour
         {
             indexDimension = 2;
         }
-        Dimension myDimension=Dimension.Blue;
+        Dimension myDimension=default;
         switch (indexDimension)
         {
             case 0:
-                myDimension = Dimension.Blue;
-                break;
-            case 1:
                 myDimension = Dimension.Red;
                 break;
-            case 2:
+            case 1:
                 myDimension = Dimension.Green;
+                break;
+            case 2:
+                myDimension = Dimension.Blue;
                 break;
         }
         WorldStateManager.instance.SetState("PlayerDimension", myDimension);
-    }
+        changingDimension?.Invoke();
 
+    }
     private void ObjectAvtivation()
     {
         foreach (var item in objectDimensions)

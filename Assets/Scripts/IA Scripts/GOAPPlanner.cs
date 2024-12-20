@@ -15,6 +15,7 @@ public class GOAPPlanner : MonoBehaviour
         foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             state.Add(kvp.Key, kvp.Value);
+            //Debug.Log("keys count " + WorldStateManager.instance.GetAllStates().values.Count + "keys chequeados "+kvp.Key +" valores chequeados" + kvp.Value);
         }
         /*
         //en el codigo original acá le pasa el diccionario y chequea si las cosas existen o si se pueden usar, nosotros tenemos 2 opciones
@@ -152,12 +153,14 @@ public class GOAPPlanner : MonoBehaviour
             {
                 bool preconditionsMet =
                        gS.worldState.values.ContainsKey("PlayerAlive") &&
-                       gS.worldState.values.ContainsKey("SameDimension") &&
+                       gS.worldState.values.ContainsKey("PlayerDimension")&&
+                       gS.worldState.values.ContainsKey("EnemyDimension")&&
                        gS.worldState.values.ContainsKey("PlayerInRange") &&
                        gS.worldState.values.ContainsKey("PlayerDetected") &&
                        gS.worldState.values.ContainsKey("EnoughEnergy") &&
                         (bool)gS.worldState.values["PlayerAlive"] &&
                         (bool)gS.worldState.values["SameDimension"] &&
+                        (Dimension)gS.worldState.values["PlayerDimension"]==(Dimension)gS.worldState.values["EnemyDimension"] &&
                         (bool)gS.worldState.values["PlayerInRange"] &&
                         (bool)gS.worldState.values["PlayerDetected"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
@@ -191,10 +194,11 @@ public class GOAPPlanner : MonoBehaviour
             .Pre((gS) =>
             {
                 return  gS.worldState.values.ContainsKey("PlayerAlive") &&
-                       gS.worldState.values.ContainsKey("SameDimension") &&
+                       gS.worldState.values.ContainsKey("PlayerDimension") &&
+                       gS.worldState.values.ContainsKey("EnemyDimension") &&
                        gS.worldState.values.ContainsKey("EnoughEnergy") &&
                         (bool)gS.worldState.values["PlayerAlive"] &&
-                        !(bool)gS.worldState.values["SameDimension"] &&
+                        (Dimension)gS.worldState.values["PlayerDimension"]!=(Dimension)gS.worldState.values["EnemyDimension"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
             })
             .Effect((gS) =>

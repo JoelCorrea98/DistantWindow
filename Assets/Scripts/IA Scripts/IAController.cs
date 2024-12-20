@@ -33,7 +33,7 @@ public class IAController : MonoBehaviour
     public EnergyManager energyManager;
     public GOAPPlanner planner;
     public Animator animator;
-
+    public GameObject _characterMesh;
     //Atack
     private bool isAttacking = false; // Para evitar ataques simultáneos
     private bool attackSuccessful = false; // Indica si el ataque fue exitoso
@@ -49,6 +49,7 @@ public class IAController : MonoBehaviour
 
     [SerializeField] private bool _playerInAttackRange=false;
 
+    [SerializeField] Dimension currentDimension;
     private void PerformSearch()
     {
         if (_target == null) return;
@@ -113,6 +114,8 @@ public class IAController : MonoBehaviour
     {
         if (_target == null) return;
 
+        blockHability.SpawnClosestObjects(_target.position);
+
         _fsm.Feed(ActionEntity.NextStep);
     }
 
@@ -137,7 +140,7 @@ public class IAController : MonoBehaviour
         };
         search.OnUpdate += () =>
         {
-            Debug.Log("search update");
+           // Debug.Log("search update");
             //logica de search.OnUpdate
             PerformSearch();
         };
@@ -292,8 +295,34 @@ public class IAController : MonoBehaviour
     private void Start()
     {
         DefineNewPlan();
+        currentDimension = (Dimension)WorldStateManager.instance.GetState("PlayerDimension");
+        WorldStateManager.instance.SetState("EnemyDimension", currentDimension);
+        CambioDimension dimensionManager=FindObjectOfType<CambioDimension>();
+        if (dimensionManager)
+        {
+            dimensionManager.changingDimension += ChangeDimension;
+        }
     }
-
+    private void ChangeDimension()
+    {
+        if (currentDimension != (Dimension)WorldStateManager.instance.GetState("PlayerDimension"))
+        {
+            visionDetector.enabled = false;
+            attackCollider.enabled = false;
+            _characterMesh.SetActive(false);
+            DefineNewPlan();
+            foreach (var item in _Currentplan)
+            {
+                Debug.Log("el nuevo plan al estar en dimensiones distintas: "+item);
+            }
+        }
+        else
+        {
+            visionDetector.enabled = true;
+            attackCollider.enabled = true;
+            _characterMesh.SetActive(true);
+        }
+    }
     public void ChosePlan(List<List<ActionEntity>> plans, List <float> costs)
     {
         float lowerCost = Mathf.Infinity;
@@ -333,6 +362,16 @@ public class IAController : MonoBehaviour
         };
         StartCoroutine(planner.GeneratePlan(goal));
 
+        GOAPState goalEnergy = new GOAPState();
+       
+        goalEnergy.worldState = new WorldState()
+        {
+            values = new Dictionary<string, object>()
+            {
+                { "PlayerLowEnergy", true } // Solo nos interesa que el jugador esté muerto
+            }
+        }; 
+        // StartCoroutine(planner.GeneratePlan(goalEnergy));
         /*foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             goal.worldState.values.Add(kvp.Key, kvp.Value);
@@ -340,13 +379,6 @@ public class IAController : MonoBehaviour
         goal.worldState.values["PlayerAlive"] = false;
         StartCoroutine(planner.GeneratePlan(goal));
 
-        GOAPState goalEnergy = new GOAPState();
-        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
-        {
-            goalEnergy.worldState.values.Add(kvp.Key, kvp.Value);
-        }
-        goalEnergy.worldState.values["PlayerLowEnergy"] = true;
-       // StartCoroutine(planner.GeneratePlan(goalEnergy));
        */
     }
 
