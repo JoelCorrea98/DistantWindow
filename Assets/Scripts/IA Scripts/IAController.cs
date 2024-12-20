@@ -350,6 +350,7 @@ public class IAController : MonoBehaviour
     {
         _plans.Clear();
         _Costs.Clear();
+
         GOAPState goal = new GOAPState();
         //HACER .ADD SI FALLA!!!
 
@@ -371,7 +372,7 @@ public class IAController : MonoBehaviour
                 { "PlayerLowEnergy", true } // Solo nos interesa que el jugador esté muerto
             }
         }; 
-        // StartCoroutine(planner.GeneratePlan(goalEnergy));
+         StartCoroutine(planner.GeneratePlan(goalEnergy));
         /*foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             goal.worldState.values.Add(kvp.Key, kvp.Value);
