@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerLife : MonoBehaviour
 {
-    public int MaxLife = 100; // Vida máxima del jugador
-    private int currentLife;
+    public int MaxLife = 10; // Vida máxima del jugador
+    public int currentLife;
+    public Image lifeBar;
+    public Text energyNum;
 
     public delegate void OnLifeChanged(int currentLife, int maxLife);
     public event OnLifeChanged LifeChanged;
@@ -48,6 +51,7 @@ public class PlayerLife : MonoBehaviour
             Debug.Log("Player is dead!");
             PlayerDied?.Invoke();
         }
+        canvasRefresh();
     }
 
     public void Heal(int healAmount)
@@ -61,11 +65,20 @@ public class PlayerLife : MonoBehaviour
 
         // Notificar cambio de vida
         LifeChanged?.Invoke(currentLife, MaxLife);
+
+        canvasRefresh();
     }
 
     public int GetCurrentLife()
     {
         return currentLife;
+    }
+
+    void canvasRefresh()
+    {
+        float currentlifeFloat = currentLife;
+        float MaxLifeFloat = MaxLife;
+        lifeBar.fillAmount = currentlifeFloat / MaxLifeFloat;
     }
 }
 
