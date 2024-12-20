@@ -67,6 +67,8 @@ public class WorldStateManager : MonoBehaviour
         _worldState.worldState.values.Add("PlayerInRange", false);
         _worldState.worldState.values.Add("ReduceDistance", false);
         _worldState.worldState.values.Add("SameDimension", true);
+        _worldState.worldState.values.Add("PlayerDimension", Dimension.Red);
+        _worldState.worldState.values.Add("PlayerEnergy", 1f);
         _worldState.worldState.values.Add("PlayerVulnerable", false);
 
     }

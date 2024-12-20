@@ -17,6 +17,7 @@ public class PlayerEnergy : MonoBehaviour
     void Update()
     {
         substractEnergy();
+        WorldStateManager.instance.SetState("PlayerEnergy", actualEnergy);
     }
 
     void substractEnergy()

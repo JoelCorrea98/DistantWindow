@@ -179,6 +179,7 @@ public class IAController : MonoBehaviour
             {
                 energyManager.SpendEnergy(2);
                 Vector3 dir = (_target.position - transform.position).normalized;
+                dir.y = 0;
                 if (dir != Vector3.zero)
                 {
                     transform.forward = dir;

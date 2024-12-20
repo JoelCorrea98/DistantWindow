@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum Dimension
 {
-    Red,
     Blue, 
-    Green
+    Green,
+    Red
 }
 public class CambioDimension : MonoBehaviour
 {
@@ -56,6 +56,20 @@ public class CambioDimension : MonoBehaviour
         {
             indexDimension = 2;
         }
+        Dimension myDimension=Dimension.Blue;
+        switch (indexDimension)
+        {
+            case 0:
+                myDimension = Dimension.Blue;
+                break;
+            case 1:
+                myDimension = Dimension.Red;
+                break;
+            case 2:
+                myDimension = Dimension.Green;
+                break;
+        }
+        WorldStateManager.instance.SetState("PlayerDimension", myDimension);
     }
 
     private void ObjectAvtivation()
