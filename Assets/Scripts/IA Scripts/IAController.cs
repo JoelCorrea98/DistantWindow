@@ -214,6 +214,7 @@ public class IAController : MonoBehaviour
         failStep.OnEnter += a => 
         {
             Debug.Log("failStep enter");
+            DefineNewPlan();
             //logica del failStep.OnEnter
         };
         failStep.OnUpdate += () =>
