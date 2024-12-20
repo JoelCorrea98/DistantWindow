@@ -50,7 +50,8 @@ public class AIMovement : MonoBehaviour
         {
             CurrentTarget = path[currentNodeIndex].Position;
             transform.position = Vector3.MoveTowards(transform.position, CurrentTarget, Time.deltaTime * 3f);
-            transform.forward= (path[currentNodeIndex].Position - transform.position).normalized;
+            if ((path[currentNodeIndex].Position - transform.position).normalized != Vector3.zero)
+                transform.forward= (path[currentNodeIndex].Position - transform.position).normalized;
             // Avanzar al siguiente nodo si está cerca del actual
             if (Vector3.Distance(transform.position, CurrentTarget) < 0.1f)
             {

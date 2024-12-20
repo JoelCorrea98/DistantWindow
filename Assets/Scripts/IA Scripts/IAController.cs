@@ -46,7 +46,7 @@ public class IAController : MonoBehaviour
     //Block
     public IABlockHability blockHability;
 
-    private bool _playerInAttackRange;
+    [SerializeField] private bool _playerInAttackRange=false;
 
     private void PerformSearch()
     {
