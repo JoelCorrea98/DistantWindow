@@ -49,6 +49,7 @@ public class PlayerLife : MonoBehaviour
         if (currentLife <= 0)
         {
             Debug.Log("Player is dead!");
+            WorldStateManager.instance.SetState("PlayerAlive", false);
             PlayerDied?.Invoke();
         }
         canvasRefresh();

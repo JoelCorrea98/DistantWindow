@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class AttackDetector : MonoBehaviour
 {
-    public LayerMask targetLayer; // Capa del jugador
     IAController controlller;
     void Start()
     {
@@ -13,14 +12,14 @@ public class AttackDetector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == targetLayer)
+        if(other.gameObject.layer == 11)
         {
             controlller.PlayerInAttackRange(true);
         }   
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == targetLayer)
+        if (other.gameObject.layer == 11)
         {
             controlller.PlayerInAttackRange(false);
         }
