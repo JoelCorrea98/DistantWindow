@@ -152,6 +152,7 @@ public class GOAPPlanner : MonoBehaviour
             .Effect((gS) =>
             {
                 gS.worldState.values["PlayerHealthReduced"]=true;
+                gS.worldState.values["PlayerLife"]= (float)WorldStateManager.instance.GetState("PlayerLife")-1;
                 return gS;
             }),
             new GOAPAction("Teleport")
