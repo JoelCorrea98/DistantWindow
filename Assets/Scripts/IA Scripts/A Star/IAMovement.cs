@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AIMovement : MonoBehaviour
 {
@@ -8,6 +7,11 @@ public class AIMovement : MonoBehaviour
     private List<T> path;
     private int currentNodeIndex;
     public Vector3 CurrentTarget;
+
+    /// <summary>
+    /// Velocidad de movimiento de la IA.
+    /// </summary>
+    public float RunSpeed = 3f; // Velocidad pública configurable desde el Inspector.
 
     /// <summary>
     /// Indica si la IA está en movimiento.
@@ -49,9 +53,13 @@ public class AIMovement : MonoBehaviour
         if (path != null && currentNodeIndex < path.Count)
         {
             CurrentTarget = path[currentNodeIndex].Position;
-            transform.position = Vector3.MoveTowards(transform.position, CurrentTarget, Time.deltaTime * 3f);
+
+            // Usa RunSpeed para controlar la velocidad del movimiento
+            transform.position = Vector3.MoveTowards(transform.position, CurrentTarget, Time.deltaTime * RunSpeed);
+
             if ((path[currentNodeIndex].Position - transform.position).normalized != Vector3.zero)
-                transform.forward= (path[currentNodeIndex].Position - transform.position).normalized;
+                transform.forward = (path[currentNodeIndex].Position - transform.position).normalized;
+
             // Avanzar al siguiente nodo si está cerca del actual
             if (Vector3.Distance(transform.position, CurrentTarget) < 0.1f)
             {
@@ -70,5 +78,6 @@ public class AIMovement : MonoBehaviour
         return path != null && currentNodeIndex >= path.Count;
     }
 }
+
 
 
