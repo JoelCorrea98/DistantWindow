@@ -32,6 +32,7 @@ public class GOAPPlanner : MonoBehaviour
     public IEnumerator GeneratePlan(GOAPState goal)
     {
         Debug.Log("Goal State:");
+
         foreach (var kvp in goal.worldState.values)
         {
             Debug.Log($"{kvp.Key}: {kvp.Value}");
@@ -66,13 +67,26 @@ public class GOAPPlanner : MonoBehaviour
             }
             return count;
         };
-
+        Dictionary<string, object> goalDict = new Dictionary<string, object>();
+        foreach (var item in goal.worldState.values)
+        {
+            goalDict.Add(item.Key,item.Value);
+        }
         Func<GOAPState, bool> objectice = (curr) =>
         {
-            foreach (var currValue in curr.worldState.values)
+            foreach (var item in curr.worldState.values)
+            {
+                Debug.Log("Curr world key: " + item.Key + " curr world value: " + item);
+            }
+            Debug.Log("goal count:" + goalDict.Count);
+            foreach (var item in goalDict)
+            {
+                Debug.Log("goal world key: " + item.Key + " goal world value: " + item);
+            }
+            foreach (var goalValue in goalDict)
             {
                
-                if (!goal.worldState.values.ContainsKey(currValue.Key) || !goal.worldState.values[currValue.Key].Equals(currValue.Value))
+                if (!curr.worldState.values.ContainsKey(goalValue.Key) || !curr.worldState.values[goalValue.Key].Equals(goalValue.Value))
                     return false;
             }
             return true;
