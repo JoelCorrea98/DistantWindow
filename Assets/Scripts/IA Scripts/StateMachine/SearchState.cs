@@ -61,7 +61,7 @@ public class SearchState : AIStateBase
         Debug.Log("Exiting Search State");
         // Limpiar lógica si es necesario
         //controller.worldState.SetState("PlayerDetected", true); // Notificar al WorldState
-        WorldStateManager.instance.SetState("PlayerDetected", true);
+        //WorldStateManager.instance.SetState("PlayerDetected", true);
 
         controller.EnergyManager.AddEnergy(2); // Agregar energía si es necesario
     }

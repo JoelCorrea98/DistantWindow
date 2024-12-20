@@ -274,7 +274,17 @@ public class IAController : MonoBehaviour
         _Costs.Clear();
         GOAPState goal = new GOAPState();
         //HACER .ADD SI FALLA!!!
-        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
+
+        goal.worldState = new WorldState()
+        {
+            values = new Dictionary<string, object>()
+            {
+                { "PlayerAlive", false } // Solo nos interesa que el jugador esté muerto
+            }
+        };
+        StartCoroutine(planner.GeneratePlan(goal));
+
+        /*foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             goal.worldState.values.Add(kvp.Key, kvp.Value);
         }
@@ -288,7 +298,7 @@ public class IAController : MonoBehaviour
         }
         goalEnergy.worldState.values["PlayerLowEnergy"] = true;
        // StartCoroutine(planner.GeneratePlan(goalEnergy));
-
+       */
     }
 
     private void Update()

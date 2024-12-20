@@ -31,10 +31,23 @@ public class GOAPPlanner : MonoBehaviour
     }
     public IEnumerator GeneratePlan(GOAPState goal)
     {
+        Debug.Log("Goal State:");
+        foreach (var kvp in goal.worldState.values)
+        {
+            Debug.Log($"{kvp.Key}: {kvp.Value}");
+        }
+
         yield return new WaitForSeconds(0.2f);
         var observedState = new Dictionary<string, object>();
 
         Check(observedState);
+        
+        Debug.Log("Observed State:");
+        foreach (var kvp in observedState)
+        {
+            Debug.Log($"{kvp.Key}: {kvp.Value}");
+        }
+
 
         var actions = CreatePossibleActionsList();
 
@@ -105,31 +118,63 @@ public class GOAPPlanner : MonoBehaviour
             .SetCost(1f)
             .Pre((gS)=>
             {
-            return gS.worldState.values.ContainsKey("PlayerDetected")&&
+                bool preconditionsMet =
+                   gS.worldState.values.ContainsKey("PlayerDetected") &&
                    !(bool)gS.worldState.values["PlayerDetected"];
+
+                if (!preconditionsMet)
+                {
+                    Debug.Log("SEARCH SEARCH SEARCH preconditions failed. Current State:");
+                    foreach (var kvp in gS.worldState.values)
+                    {
+                        Debug.Log($"{kvp.Key}: {kvp.Value}");
+                    }
+                }
+                else
+                {
+                    Debug.Log("SEARCH SEARCH SEARCH preconditions SUCCSSES!!!!!");
+                }
+                return preconditionsMet;
             })
             .Effect((gS) =>
             {
-                gS.worldState.values["PlayerAlive"] = false;
+                gS.worldState.values["PlayerDetected"] = true;
                 return gS;
+
             }),
             new GOAPAction("Chase")
             .SetCost(2f)
             .Pre((gS) =>
             {
-                return gS.worldState.values.ContainsKey("PlayerDetected") &&
-                       gS.worldState.values.ContainsKey("EnoughEnergy") &&
-                       gS.worldState.values.ContainsKey("PlayerAlive") &&
-                       gS.worldState.values.ContainsKey("ReduceDistance") &&
-                       gS.worldState.values.ContainsKey("PlayerInRange") &&
-                       (bool)gS.worldState.values["PlayerDetected"] &&
-                       (bool)gS.worldState.values["EnoughEnergy"] &&
-                       (bool)gS.worldState.values["PlayerAlive"] &&
-                       !(bool)gS.worldState.values["ReduceDistance"] &&
-                       !(bool)gS.worldState.values["PlayerInRange"];
+                bool preconditionsMet =
+                    gS.worldState.values.ContainsKey("PlayerDetected") &&
+                    gS.worldState.values.ContainsKey("EnoughEnergy") &&
+                    gS.worldState.values.ContainsKey("PlayerAlive") &&
+                    gS.worldState.values.ContainsKey("ReduceDistance") &&
+                    gS.worldState.values.ContainsKey("PlayerInRange") &&
+                    (bool)gS.worldState.values["PlayerDetected"] &&
+                    (bool)gS.worldState.values["EnoughEnergy"] &&
+                    (bool)gS.worldState.values["PlayerAlive"] &&
+                    !(bool)gS.worldState.values["ReduceDistance"] &&
+                    !(bool)gS.worldState.values["PlayerInRange"];
+
+                if (!preconditionsMet)
+                {
+                    Debug.Log("CHASE CHASE CHASE preconditions failed. Current State:");
+                    foreach (var kvp in gS.worldState.values)
+                    {
+                        Debug.Log($"{kvp.Key}: {kvp.Value}");
+                    }
+                }
+                else
+                {
+                    Debug.Log("CHASE CHASE CHASE preconditions SUCCSSES!!!!!");
+                }
+                return preconditionsMet;
             })
             .Effect((gS) =>
             {
+                //WorldStateManager.instance.DebugState();
                 gS.worldState.values["ReduceDistance"]=true;
                 gS.worldState.values["PlayerInRange"]=true;
                 return gS;
@@ -138,7 +183,8 @@ public class GOAPPlanner : MonoBehaviour
             .SetCost(2f)
             .Pre((gS) =>
             {
-                return gS.worldState.values.ContainsKey("PlayerAlive") &&
+                bool preconditionsMet =
+                       gS.worldState.values.ContainsKey("PlayerAlive") &&
                        gS.worldState.values.ContainsKey("SameDimension") &&
                        gS.worldState.values.ContainsKey("PlayerInRange") &&
                        gS.worldState.values.ContainsKey("PlayerDetected") &&
@@ -148,12 +194,41 @@ public class GOAPPlanner : MonoBehaviour
                         (bool)gS.worldState.values["PlayerInRange"] &&
                         (bool)gS.worldState.values["PlayerDetected"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
+                if (!preconditionsMet)
+                {
+                    Debug.Log("ATTACK ATTACK ATTACK preconditions failed. Current State:");
+                    foreach (var kvp in gS.worldState.values)
+                    {
+                        Debug.Log($"{kvp.Key}: {kvp.Value}");
+                    }
+                }
+                else
+                {
+                    Debug.Log("ATTACK ATTACK ATTACK preconditions SUCCSSES!!!!!");
+                }
+                return preconditionsMet;
             })
             .Effect((gS) =>
             {
-                gS.worldState.values["PlayerHealthReduced"]=true;
-                gS.worldState.values["PlayerLife"]= (float)WorldStateManager.instance.GetState("PlayerLife")-1;
+                //gS.worldState.values["PlayerHealthReduced"]=true;
+                //gS.worldState.values["PlayerLife"]= (float)WorldStateManager.instance.GetState("PlayerLife")-1;
+                
+                // Reducir la vida del jugador
+                if (gS.worldState.values.ContainsKey("PlayerLife"))
+                {
+                    int currentLife = (int)gS.worldState.values["PlayerLife"];
+                    gS.worldState.values["PlayerLife"] = Mathf.Max(0, currentLife - 1); // Reduce 1 punto de vida
+                }
+
+                 // Verificar si el jugador está muerto
+                if (gS.worldState.values.ContainsKey("PlayerLife") &&
+                (int)gS.worldState.values["PlayerLife"] <= 0)
+                {
+                     gS.worldState.values["PlayerAlive"] = false;
+                }
+
                 return gS;
+
             }),
             new GOAPAction("Teleport")
             .SetCost(4f)

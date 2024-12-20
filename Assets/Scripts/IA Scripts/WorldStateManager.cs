@@ -60,8 +60,15 @@ public class WorldStateManager : MonoBehaviour
         }
         _worldState = new GOAPState();
         _worldState.worldState.values.Add("PlayerAlive", true); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
-        _worldState.worldState.values.Add("PlayerLowEnergy", false); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
+        _worldState.worldState.values.Add("PlayerLife", 10); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
         _worldState.worldState.values.Add("PlayerDetected", false); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
+        _worldState.worldState.values.Add("PlayerLowEnergy", false); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
+        _worldState.worldState.values.Add("EnoughEnergy", true);
+        _worldState.worldState.values.Add("PlayerInRange", false);
+        _worldState.worldState.values.Add("ReduceDistance", false);
+        _worldState.worldState.values.Add("SameDimension", true);
+        _worldState.worldState.values.Add("PlayerVulnerable", false);
+
     }
     // Agregar o actualizar una entrada
     public void SetState(string key, object value)
