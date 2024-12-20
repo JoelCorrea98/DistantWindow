@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using static UnityEngine.Rendering.DebugUI;
 using System.Runtime.CompilerServices;
+using UnityEditor.Rendering;
 /*
 [System.Serializable]
 public class WorldStateEntry
@@ -52,13 +53,15 @@ public class WorldStateManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            _worldState = new GOAPState();
-            _worldState.worldState.values.Add("PlayerAlive", true); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
         }
         else
         {
             Destroy(gameObject);
         }
+        _worldState = new GOAPState();
+        _worldState.worldState.values.Add("PlayerAlive", true); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
+        _worldState.worldState.values.Add("PlayerLowEnergy", false); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
+        _worldState.worldState.values.Add("PlayerDetected", false); //y acá le inicializamos todas las cosas que no se actualicen automaticamente
     }
     // Agregar o actualizar una entrada
     public void SetState(string key, object value)
@@ -86,10 +89,14 @@ public class WorldStateManager : MonoBehaviour
         }
     }
 
-    public GOAPState GetAllStates()
+    public WorldState GetAllStates()
     {
-        GOAPState currentWorldState = _worldState;
+        WorldState currentWorldState = _worldState.worldState.Clone();
         return currentWorldState;
+    }
+    public GOAPState GetWorldState()
+    {
+        return _worldState;
     }
 
     // Depuración para mostrar el estado completo

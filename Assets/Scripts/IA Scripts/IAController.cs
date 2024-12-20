@@ -21,9 +21,9 @@ public class IAController : MonoBehaviour
     private EventFSM<ActionEntity> _fsm;
 
     //IEnumerable<Tuple<ActionEntity, Item>> _plan;
-    private List<List<ActionEntity>> _plans;
+    private List<List<ActionEntity>> _plans=new List<List<ActionEntity>>();
     private List<ActionEntity> _Currentplan;
-    private List<float> _Costs;
+    private List<float> _Costs=new List<float>();
 
     public Transform _target;
     public GameObject player;
@@ -257,6 +257,7 @@ public class IAController : MonoBehaviour
                 _Currentplan = plans[i];
             }
         }
+        Debug.Log(_Currentplan.Count);
         _fsm.Feed(ActionEntity.NextStep);
     }
 
@@ -272,13 +273,21 @@ public class IAController : MonoBehaviour
         _plans.Clear();
         _Costs.Clear();
         GOAPState goal = new GOAPState();
-        GOAPState goalEnergy = new GOAPState();
         //HACER .ADD SI FALLA!!!
+        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
+        {
+            goal.worldState.values.Add(kvp.Key, kvp.Value);
+        }
         goal.worldState.values["PlayerAlive"] = false;
         StartCoroutine(planner.GeneratePlan(goal));
 
+        GOAPState goalEnergy = new GOAPState();
+        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
+        {
+            goalEnergy.worldState.values.Add(kvp.Key, kvp.Value);
+        }
         goalEnergy.worldState.values["PlayerLowEnergy"] = true;
-        StartCoroutine(planner.GeneratePlan(goalEnergy));
+       // StartCoroutine(planner.GeneratePlan(goalEnergy));
 
     }
 

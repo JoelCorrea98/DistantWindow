@@ -5,21 +5,29 @@ using System.Linq;
 using System;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
+using static UnityEngine.Rendering.DebugUI;
 public class GOAPPlanner : MonoBehaviour
 {
-    private void Check(Dictionary<string, object> state)
+    private void Check(Dictionary<string,object> state)
     {
+        state.Clear();
+
+        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
+        {
+            state.Add(kvp.Key, kvp.Value);
+        }
+        /*
         //en el codigo original acá le pasa el diccionario y chequea si las cosas existen o si se pueden usar, nosotros tenemos 2 opciones
-        
+
         //opcion 1: que haya un manager que se encargue de tener toda la info, y los distintos objetos lo vayan actualizando
         //algo así como un "WorldStateManager" que tenga el "estado" del mundo real todo el tiempo, al que se pueda acceder por información
         // ej: state["PlayerLife"]=WorldStateManager.GetPlayerLife();
         // ej2: recorro el WorldState.values de WorldStateManager y le voy asignando todos los valores al "state" que entró por parámetro a este metodo
-        
+
         //opcion 2: tener en este metodo toda clase de cosas locas para que desde acá el mismo Planner
         //se entere del estado del mundo (todo lo que le interesa)
 
-        //por lo pronto procedo como si estuviera xd
+        //por lo pronto procedo como si estuviera xd*/
     }
     public IEnumerator GeneratePlan(GOAPState goal)
     {
@@ -32,42 +40,39 @@ public class GOAPPlanner : MonoBehaviour
 
         GOAPState initial = new GOAPState();
 
-        initial.worldState = new WorldState();
-
+        initial.worldState = new WorldState() { values = new Dictionary<string, object>() };
         initial.worldState.values = observedState; // acá le asignamos los valores conseguidos en el metodo de Check
 
         Func<GOAPState, float> heuristic = (curr) =>
         {
             int count = 0;
             string key = "PlayerAlive";
-            if (!curr.worldState.values.ContainsKey(key) || (bool)curr.worldState.values[key]) //acá si estuvieramos usando la vida del player en vez
-                                                                                              //de un bool, lo casteamos a float y le preguntamos
-                                                                                              //si es mayor a 1
-                count++;
+            if (!curr.worldState.values.ContainsKey(key) || (bool)curr.worldState.values[key]) 
+            {
+                count+=1;
+            }
             return count;
         };
+
         Func<GOAPState, bool> objectice = (curr) =>
         {
-            foreach (var condition in goal.worldState.values)
+            foreach (var currValue in curr.worldState.values)
             {
-                if (!curr.worldState.values.ContainsKey(condition.Key) ||
-                    curr.worldState.values[condition.Key] != condition.Value)
-                {
+               
+                if (!goal.worldState.values.ContainsKey(currValue.Key) || !goal.worldState.values[currValue.Key].Equals(currValue.Value))
                     return false;
-                }
             }
             return true;
         };
-        var actDict = new Dictionary<string, FSMInputs>() //en vez de FSMInputs vamos a usar el que le hayas declarado a la eventFSM
+        var actDict = new Dictionary<string, ActionEntity>() //en vez de FSMInputs vamos a usar el que le hayas declarado a la eventFSM
                                                           //aunque supongo que serán algo así, el FSMInput que cree en este codigo es provisional
         {
-            {"Search",FSMInputs.Search },
-            {"Chase",FSMInputs.Chase },
-            {"Attack",FSMInputs.Attack },
-            {"Teleport",FSMInputs.Teleport },
-            {"Block",FSMInputs.Block },
+            {"Search",ActionEntity.Search },
+            {"Chase",ActionEntity.Chase },
+            {"Attack",ActionEntity.Attack },
+            {"Teleport",ActionEntity.Teleport },
+            {"Block",ActionEntity.Block },
         };
-
         var plan = Goap.Execute(initial, null, objectice, heuristic, actions);
 
         if (plan == null)
@@ -77,24 +82,16 @@ public class GOAPPlanner : MonoBehaviour
             var fsmPlan = plan.Where(a => a != null && actDict.ContainsKey(a.Name))
                               .Select(a => actDict[a.Name])
                               .ToList();
-            
-            //AIController.NotifyNewPlan(fsmPlan,plan.Sum(action => action.Cost));
+            GetComponent <IAController>().NotifyNewPlans(fsmPlan,plan.Sum(action => action.Cost));
+            /*
 
             //con la linea anterior le pasariamos la lista de Inputs para la fsm, y la heuristica final de dicho plan
             //entonces desde el controller llamamos este metodo para generar un plan pasandole un goal
             //después la llamamos otra vez con otro goal
             //y finalmente compara las heuristicas de los dos planes y se queda y ejecuta el más barato
-            //no debemos olvidar que si falla alguna accion tiene que volver a generar los planes para elegir y ejecutar el mas optimo
+            //no debemos olvidar que si falla alguna accion tiene que volver a generar los planes para elegir y ejecutar el mas optimo*/
         }
     }
-    enum FSMInputs
-    {
-        Search,
-        Chase,
-        Attack,
-        Teleport,
-        Block
-    };
     private List<GOAPAction> CreatePossibleActionsList()
     {
         return new List<GOAPAction>() //Por ahora le dejo las precondiciones y efectos como los teniamos, pero al momento de balancear 
@@ -113,8 +110,7 @@ public class GOAPPlanner : MonoBehaviour
             })
             .Effect((gS) =>
             {
-                gS.worldState.values["PlayerDetected"]=true;
-                gS.worldState.values["EnoughEnergy"]=true;
+                gS.worldState.values["PlayerAlive"] = false;
                 return gS;
             }),
             new GOAPAction("Chase")
@@ -198,6 +194,7 @@ public class GOAPPlanner : MonoBehaviour
 
         };
     }
+
     #region NOABRIR
     /*
 
