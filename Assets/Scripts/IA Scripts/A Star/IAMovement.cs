@@ -41,7 +41,7 @@ public class AIMovement : MonoBehaviour
         }
 
         currentNodeIndex = 0;
-        //Debug.Log($"Path found with {path.Count} nodes. Moving to target.");
+        Debug.Log($"Path found with {path.Count} nodes. Moving to target.");
     }
 
     private void Update()
@@ -50,7 +50,7 @@ public class AIMovement : MonoBehaviour
         {
             CurrentTarget = path[currentNodeIndex].Position;
             transform.position = Vector3.MoveTowards(transform.position, CurrentTarget, Time.deltaTime * 3f);
-
+            transform.forward= (path[currentNodeIndex].Position - transform.position).normalized;
             // Avanzar al siguiente nodo si está cerca del actual
             if (Vector3.Distance(transform.position, CurrentTarget) < 0.1f)
             {
