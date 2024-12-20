@@ -1913,6 +1913,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5313107104316643210, guid: f38c37d74d183514287fe19a1393918e,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 5313107104316643211, guid: f38c37d74d183514287fe19a1393918e,
         type: 3}
       propertyPath: SpeedFX
@@ -7025,6 +7030,7 @@ MonoBehaviour:
   globalDetector: {fileID: 1143597704}
   energyManager: {fileID: 1569631188}
   planner: {fileID: 1320188428}
+  animator: {fileID: 1320188427}
   attackDelay: 1.5
   attackDamage: 3
   playerLayer:
@@ -8580,9 +8586,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f22f26a4e6944c4498a6778c123571d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 2048
 --- !u!1 &1619169070
 GameObject:
   m_ObjectHideFlags: 0

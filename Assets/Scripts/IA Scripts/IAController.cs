@@ -32,6 +32,7 @@ public class IAController : MonoBehaviour
     public GlobalDetector globalDetector; // Detector global opcional
     public EnergyManager energyManager;
     public GOAPPlanner planner;
+    public Animator animator;
 
     //Atack
     private bool isAttacking = false; // Para evitar ataques simultáneos
@@ -355,6 +356,8 @@ public class IAController : MonoBehaviour
 
     public void Movement()
     {
+        animator.SetBool("Runing", true);
+
         if (!movement.IsMoving)
         {
             Vector3 randomTarget = GetRandomPosition();
@@ -393,6 +396,8 @@ public class IAController : MonoBehaviour
         isAttacking = true;
         attackSuccessful = false; // Reiniciar el estado del ataque
 
+        animator.SetBool("Runing", false);
+        animator.SetTrigger("TriggerAttackAnim");
         // Simular preparación del ataque
         yield return new WaitForSeconds(attackDelay);
 
