@@ -46,6 +46,8 @@ public class IAController : MonoBehaviour
     //Block
     public IABlockHability blockHability;
 
+    private bool _playerInAttackRange;
+
     private void PerformSearch()
     {
         if (_target == null) return;
@@ -59,6 +61,8 @@ public class IAController : MonoBehaviour
             WorldStateManager.instance.SetState("PlayerDetected", true);
             _fsm.Feed(ActionEntity.NextStep);
         }
+        //definit fallos
+
     }
 
     private void PerformChase()
@@ -66,9 +70,12 @@ public class IAController : MonoBehaviour
         if (_target == null) return;
 
         Debug.Log("Chasing the player...");
-        this.movement.MoveTo(_target.position);
-
-        _fsm.Feed(ActionEntity.NextStep);
+        movement.MoveTo(_target.position);
+        if (movement.HasReachedDestination())
+        {
+            _fsm.Feed(ActionEntity.NextStep);
+        }
+        //definit fallos
     }
 
     private void PerformAttack()
@@ -141,6 +148,7 @@ public class IAController : MonoBehaviour
         {
             //logica del search.OnEnter
             energyManager.SpendEnergy(2);
+            movement.MoveTo(_target.position);
             Debug.Log("chase enter");
         };
         chase.OnUpdate += () =>
@@ -148,7 +156,10 @@ public class IAController : MonoBehaviour
             //logica de search.OnUpdate
             Debug.Log("chase update");
 
-            PerformChase();
+            if (movement.HasReachedDestination())
+            {
+                _fsm.Feed(ActionEntity.NextStep);
+            }
         };
         chase.OnExit += a =>
         {
@@ -161,7 +172,10 @@ public class IAController : MonoBehaviour
         {
             //logica del search.OnEnter
             Debug.Log("attack enter");
-            energyManager.SpendEnergy(2);
+            if (_playerInAttackRange)
+                energyManager.SpendEnergy(2);
+            else
+                _fsm.Feed(ActionEntity.FailedStep);
         };
         attack.OnUpdate += () =>
         {
@@ -436,6 +450,10 @@ public class IAController : MonoBehaviour
         transform.position = newPosition;
 
         Debug.Log($"Teletransportado a {newPosition}");
+    }
+    public void PlayerInAttackRange(bool value)
+    {
+        _playerInAttackRange = value;
     }
     /// <summary>
     /// /////////////////////////////////////////////////////////////////////////////////
