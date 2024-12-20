@@ -16,7 +16,7 @@ namespace IA2 {
 		public bool Feed(T input)
         {
 			State<T> newState;
-
+			Debug.Log(input);
 			//Added any. Notice the or will not execute the second part if it satisfies the first condition.
 			if (current.Feed(input, out newState) || any.Feed(input, out newState)) {
 				current.Exit(input);

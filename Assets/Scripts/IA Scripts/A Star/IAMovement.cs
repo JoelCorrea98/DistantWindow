@@ -41,7 +41,7 @@ public class AIMovement : MonoBehaviour
         }
 
         currentNodeIndex = 0;
-        Debug.Log($"Path found with {path.Count} nodes. Moving to target.");
+        //Debug.Log($"Path found with {path.Count} nodes. Moving to target.");
     }
 
     private void Update()

@@ -56,10 +56,9 @@ public class IAController : MonoBehaviour
         if (visionDetector.IsPlayerDetected || globalDetector.IsPlayerDetected)
         {
             Debug.Log("Player detected during search!");
-            DefineNewPlan(); // ya hice la accion
+            WorldStateManager.instance.SetState("PlayerDetected", true);
+            _fsm.Feed(ActionEntity.NextStep);
         }
-
-        _fsm.Feed(ActionEntity.NextStep);
     }
 
     private void PerformChase()
@@ -122,16 +121,19 @@ public class IAController : MonoBehaviour
 
         search.OnEnter += a => 
         {
+            Debug.Log("search enter");
             //logica del search.OnEnter
             energyManager.SpendEnergy(1);
         };
         search.OnUpdate += () =>
         {
+            Debug.Log("search update");
             //logica de search.OnUpdate
             PerformSearch();
         };
         search.OnExit += a =>
         {
+            Debug.Log("search exit");
             //logica del search.OnExit
         };
         /*--------------------------------*/
@@ -139,92 +141,119 @@ public class IAController : MonoBehaviour
         {
             //logica del search.OnEnter
             energyManager.SpendEnergy(2);
+            Debug.Log("chase enter");
         };
         chase.OnUpdate += () =>
         {
             //logica de search.OnUpdate
+            Debug.Log("chase update");
+
             PerformChase();
         };
         chase.OnExit += a =>
         {
+            Debug.Log("chase exit");
+
             //logica del search.OnExit
         };
         /*--------------------------------*/
         attack.OnEnter += a =>
         {
             //logica del search.OnEnter
+            Debug.Log("attack enter");
             energyManager.SpendEnergy(2);
         };
         attack.OnUpdate += () =>
         {
+            Debug.Log("attack update");
             //logica de search.OnUpdate
             PerformAttack();
         };
         attack.OnExit += a =>
         {
+            Debug.Log("attack exit");
             //logica del search.OnExit
         };
         /*--------------------------------*/
         block.OnEnter += a =>
         {
             //logica del search.OnEnter
+            Debug.Log("block enter");
             energyManager.SpendEnergy(4);
             blockHability.SpawnClosestObjects(_target.transform.position);
         };
         block.OnUpdate += () =>
         {
+            Debug.Log("block update");
             //logica de search.OnUpdate
         };
         block.OnExit += a =>
         {
+            Debug.Log("block exit");
             //logica del search.OnExit
         };
         /*--------------------------------*/
         teleport.OnEnter += a =>
         {
             //logica del search.OnEnter
+            Debug.Log("teleport enter");
             energyManager.SpendEnergy(4);
             PerformTeleport();
         };
         teleport.OnUpdate += () =>
         {
+            Debug.Log("teleport update");
             //logica de search.OnUpdate
         };
         teleport.OnExit += a =>
         {
+            Debug.Log("teleport exit");
             //logica del search.OnExit
         };
         /*--------------------------------*/
         failStep.OnEnter += a => 
         {
+            Debug.Log("failStep enter");
             //logica del failStep.OnEnter
         };
         failStep.OnUpdate += () =>
         {
+            Debug.Log("failStep update");
             //logica del failStep.OnUpdate
         };
         failStep.OnExit += a =>
         {
+            Debug.Log("failStep exit");
             //logica del failStep.OnExit
         };
 
        
         bridgeStep.OnEnter += a => {
+            Debug.Log("bridgeStep enter");
+
             var step = _Currentplan.FirstOrDefault();
             if (step != null)
             {
 
                 _Currentplan = _Currentplan.Skip(1).ToList();
-                _fsm.Feed(ActionEntity.NextStep);
+                _fsm.Feed(step);
             }
             else
             {
                 // aca podríamos poner un estado de que gano (se pone a baiar o algo) 
             }
         };
+        bridgeStep.OnUpdate += () => 
+        {
+            Debug.Log("bridgeStep update");
+        };
+        bridgeStep.OnExit += a =>
+        {
+            Debug.Log("bridgeStep exit");
+        };
 
 
-        StateConfigurer.Create(any)
+            StateConfigurer.Create(any)
             .SetTransition(ActionEntity.NextStep, bridgeStep)
             .SetTransition(ActionEntity.FailedStep, failStep)
             .Done();
@@ -237,7 +266,7 @@ public class IAController : MonoBehaviour
             .SetTransition(ActionEntity.Block, block)
             .Done();
 
-        _fsm = new EventFSM<ActionEntity>(search);
+        _fsm = new EventFSM<ActionEntity>(search,any);
     }
 
     private void Start()
@@ -261,7 +290,7 @@ public class IAController : MonoBehaviour
         _fsm.Feed(ActionEntity.NextStep);
     }
 
-    public void NotifyNewPlans(List<ActionEntity> plan, float cost)
+    public void NotifyNewPlan(List<ActionEntity> plan, float cost)
     {
         _plans.Add(plan);
         _Costs.Add(cost);
@@ -303,14 +332,12 @@ public class IAController : MonoBehaviour
 
     private void Update()
     {
-        //Never forget
         _fsm.Update();
     }
 
     public void Movement()
     {
-
-        if (movement.IsMoving)
+        if (!movement.IsMoving)
         {
             Vector3 randomTarget = GetRandomPosition();
             movement.MoveTo(randomTarget);

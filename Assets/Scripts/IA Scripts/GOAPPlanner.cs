@@ -31,25 +31,12 @@ public class GOAPPlanner : MonoBehaviour
     }
     public IEnumerator GeneratePlan(GOAPState goal)
     {
-        Debug.Log("Goal State:");
-
-        foreach (var kvp in goal.worldState.values)
-        {
-            Debug.Log($"{kvp.Key}: {kvp.Value}");
-        }
 
         yield return new WaitForSeconds(0.2f);
         var observedState = new Dictionary<string, object>();
 
         Check(observedState);
         
-        Debug.Log("Observed State:");
-        foreach (var kvp in observedState)
-        {
-            Debug.Log($"{kvp.Key}: {kvp.Value}");
-        }
-
-
         var actions = CreatePossibleActionsList();
 
         GOAPState initial = new GOAPState();
@@ -74,18 +61,8 @@ public class GOAPPlanner : MonoBehaviour
         }
         Func<GOAPState, bool> objectice = (curr) =>
         {
-            foreach (var item in curr.worldState.values)
-            {
-                Debug.Log("Curr world key: " + item.Key + " curr world value: " + item);
-            }
-            Debug.Log("goal count:" + goalDict.Count);
-            foreach (var item in goalDict)
-            {
-                Debug.Log("goal world key: " + item.Key + " goal world value: " + item);
-            }
             foreach (var goalValue in goalDict)
             {
-               
                 if (!curr.worldState.values.ContainsKey(goalValue.Key) || !curr.worldState.values[goalValue.Key].Equals(goalValue.Value))
                     return false;
             }
@@ -109,7 +86,7 @@ public class GOAPPlanner : MonoBehaviour
             var fsmPlan = plan.Where(a => a != null && actDict.ContainsKey(a.Name))
                               .Select(a => actDict[a.Name])
                               .ToList();
-            GetComponent <IAController>().NotifyNewPlans(fsmPlan,plan.Sum(action => action.Cost));
+            GetComponent <IAController>().NotifyNewPlan(fsmPlan,plan.Sum(action => action.Cost));
             /*
 
             //con la linea anterior le pasariamos la lista de Inputs para la fsm, y la heuristica final de dicho plan
@@ -136,18 +113,6 @@ public class GOAPPlanner : MonoBehaviour
                    gS.worldState.values.ContainsKey("PlayerDetected") &&
                    !(bool)gS.worldState.values["PlayerDetected"];
 
-                if (!preconditionsMet)
-                {
-                    Debug.Log("SEARCH SEARCH SEARCH preconditions failed. Current State:");
-                    foreach (var kvp in gS.worldState.values)
-                    {
-                        Debug.Log($"{kvp.Key}: {kvp.Value}");
-                    }
-                }
-                else
-                {
-                    Debug.Log("SEARCH SEARCH SEARCH preconditions SUCCSSES!!!!!");
-                }
                 return preconditionsMet;
             })
             .Effect((gS) =>
@@ -172,18 +137,6 @@ public class GOAPPlanner : MonoBehaviour
                     !(bool)gS.worldState.values["ReduceDistance"] &&
                     !(bool)gS.worldState.values["PlayerInRange"];
 
-                if (!preconditionsMet)
-                {
-                    Debug.Log("CHASE CHASE CHASE preconditions failed. Current State:");
-                    foreach (var kvp in gS.worldState.values)
-                    {
-                        Debug.Log($"{kvp.Key}: {kvp.Value}");
-                    }
-                }
-                else
-                {
-                    Debug.Log("CHASE CHASE CHASE preconditions SUCCSSES!!!!!");
-                }
                 return preconditionsMet;
             })
             .Effect((gS) =>
@@ -208,18 +161,7 @@ public class GOAPPlanner : MonoBehaviour
                         (bool)gS.worldState.values["PlayerInRange"] &&
                         (bool)gS.worldState.values["PlayerDetected"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
-                if (!preconditionsMet)
-                {
-                    Debug.Log("ATTACK ATTACK ATTACK preconditions failed. Current State:");
-                    foreach (var kvp in gS.worldState.values)
-                    {
-                        Debug.Log($"{kvp.Key}: {kvp.Value}");
-                    }
-                }
-                else
-                {
-                    Debug.Log("ATTACK ATTACK ATTACK preconditions SUCCSSES!!!!!");
-                }
+
                 return preconditionsMet;
             })
             .Effect((gS) =>

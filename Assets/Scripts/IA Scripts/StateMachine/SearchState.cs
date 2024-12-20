@@ -22,7 +22,7 @@ public class SearchState : AIStateBase
         if (controller.VisionDetector.IsPlayerDetected || controller.GlobalDetector.IsPlayerDetected)
         {
             Debug.Log("Player detected during search!");
-            controller.iAController.DefineNewPlan(); // ya hice la accion
+            //controller.iAController.DefineNewPlan(); // ya hice la accion
         }
     }
 

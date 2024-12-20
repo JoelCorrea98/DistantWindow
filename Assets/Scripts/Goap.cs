@@ -45,10 +45,10 @@ public class Goap : MonoBehaviour
 
         foreach (var act in seq.Skip(1))
         {
-			Debug.Log(act);
+			//Debug.Log(act);
         }
 
-		Debug.Log("WATCHDOG " + watchdog);
+		//Debug.Log("WATCHDOG " + watchdog);
 		
 		return seq.Skip(1).Select(x => x.generatingAction);
 	}
