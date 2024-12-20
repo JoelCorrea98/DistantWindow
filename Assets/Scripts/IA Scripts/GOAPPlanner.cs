@@ -11,11 +11,10 @@ public class GOAPPlanner : MonoBehaviour
     private void Check(Dictionary<string,object> state)
     {
         state.Clear();
-
-        foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
+        WorldState worldCopy= WorldStateManager.instance.GetAllStates().Clone();
+        foreach (var kvp in worldCopy.values)
         {
             state.Add(kvp.Key, kvp.Value);
-            //Debug.Log("keys count " + WorldStateManager.instance.GetAllStates().values.Count + "keys chequeados "+kvp.Key +" valores chequeados" + kvp.Value);
         }
         /*
         //en el codigo original acá le pasa el diccionario y chequea si las cosas existen o si se pueden usar, nosotros tenemos 2 opciones
@@ -37,7 +36,7 @@ public class GOAPPlanner : MonoBehaviour
         var observedState = new Dictionary<string, object>();
 
         Check(observedState);
-        
+       
         var actions = CreatePossibleActionsList();
 
         GOAPState initial = new GOAPState();
@@ -159,12 +158,12 @@ public class GOAPPlanner : MonoBehaviour
                        gS.worldState.values.ContainsKey("PlayerDetected") &&
                        gS.worldState.values.ContainsKey("EnoughEnergy") &&
                         (bool)gS.worldState.values["PlayerAlive"] &&
-                        (bool)gS.worldState.values["SameDimension"] &&
-                        (Dimension)gS.worldState.values["PlayerDimension"]==(Dimension)gS.worldState.values["EnemyDimension"] &&
+                        (Dimension)gS.worldState.values["PlayerDimension"]==(Dimension) gS.worldState.values["EnemyDimension"] &&
                         (bool)gS.worldState.values["PlayerInRange"] &&
                         (bool)gS.worldState.values["PlayerDetected"] &&
                         (bool)gS.worldState.values["EnoughEnergy"];
 
+                    Debug.Log("la condicion de ataque devolvio: " +preconditionsMet);
                 return preconditionsMet;
             })
             .Effect((gS) =>

@@ -268,7 +268,7 @@ public class IAController : MonoBehaviour
         };
         bridgeStep.OnUpdate += () => 
         {
-            Debug.Log("bridgeStep update");
+           // Debug.Log("bridgeStep update");
         };
         bridgeStep.OnExit += a =>
         {
@@ -310,17 +310,17 @@ public class IAController : MonoBehaviour
             visionDetector.enabled = false;
             attackCollider.enabled = false;
             _characterMesh.SetActive(false);
-            DefineNewPlan();
-            foreach (var item in _Currentplan)
-            {
-                Debug.Log("el nuevo plan al estar en dimensiones distintas: "+item);
-            }
         }
         else
         {
             visionDetector.enabled = true;
             attackCollider.enabled = true;
             _characterMesh.SetActive(true);
+        }
+            DefineNewPlan();
+        foreach (var item in _Currentplan)
+        {
+            Debug.Log("el nuevo plan al estar en dimensiones distintas: " + item);
         }
     }
     public void ChosePlan(List<List<ActionEntity>> plans, List <float> costs)

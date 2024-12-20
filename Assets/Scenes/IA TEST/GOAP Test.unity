@@ -6276,6 +6276,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: character
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b32a7d80b12f6e44fbab9bc9f7e0c02f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7113,6 +7118,7 @@ MonoBehaviour:
   energyManager: {fileID: 1569631188}
   planner: {fileID: 1320188428}
   animator: {fileID: 1320188427}
+  _characterMesh: {fileID: 1478207308}
   attackDelay: 1.5
   attackDamage: 3
   playerLayer:
@@ -7121,6 +7127,7 @@ MonoBehaviour:
   attackCollider: {fileID: 1603503548}
   blockHability: {fileID: 1320188429}
   _playerInAttackRange: 0
+  currentDimension: 0
 --- !u!4 &1320188419
 Transform:
   m_ObjectHideFlags: 0
@@ -7992,6 +7999,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1662720877}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1478207308 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b32a7d80b12f6e44fbab9bc9f7e0c02f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1198999904}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1486572850
 GameObject:
   m_ObjectHideFlags: 0
