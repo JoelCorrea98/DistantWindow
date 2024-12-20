@@ -80,21 +80,23 @@ public class IAController : MonoBehaviour
 
     private void PerformAttack()
     {
-        Debug.Log("PerformAttack"); //acá podría hacer la logica de ataque
+        //Debug.Log("PerformAttack"); //acá podría hacer la logica de ataque
         if (_target == null) return;
 
         
         if (isAttacking) return; // Si ya está atacando, salir
            
         StartCoroutine(PerformCoRAttack());
-        
 
-        if (true) //podríamos chequear si le pegó o no al player
+        if (!attackSuccessful) 
+        {
+            _fsm.Feed(ActionEntity.FailedStep);
+        }
+        else
         {
             _fsm.Feed(ActionEntity.NextStep);
         }
-        else
-            _fsm.Feed(ActionEntity.FailedStep);
+
     }
 
     private void PerformTeleport()
@@ -173,9 +175,18 @@ public class IAController : MonoBehaviour
             //logica del search.OnEnter
             Debug.Log("attack enter");
             if (_playerInAttackRange)
+            {
                 energyManager.SpendEnergy(2);
+                Vector3 dir = (_target.position - transform.position).normalized;
+                if (dir != Vector3.zero)
+                {
+                    transform.forward = dir;
+                }
+            }
             else
+            {
                 _fsm.Feed(ActionEntity.FailedStep);
+            }
         };
         attack.OnUpdate += () =>
         {
@@ -247,16 +258,8 @@ public class IAController : MonoBehaviour
             Debug.Log("bridgeStep enter");
 
             var step = _Currentplan.FirstOrDefault();
-            if (step != null)
-            {
-
-                _Currentplan = _Currentplan.Skip(1).ToList();
-                _fsm.Feed(step);
-            }
-            else
-            {
-                // aca podríamos poner un estado de que gano (se pone a baiar o algo) 
-            }
+            _Currentplan = _Currentplan.Skip(1).ToList();
+            _fsm.Feed(step);
         };
         bridgeStep.OnUpdate += () => 
         {

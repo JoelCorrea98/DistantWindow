@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Dimension
+{
+    Red,
+    Blue, 
+    Green
+}
 public class CambioDimension : MonoBehaviour
 {
-    private int indexDimension;
+    [SerializeField] private int indexDimension;
     public List<GameObject> objectDimensions;
     public List<Camera> cameraDimensions;
     public GameObject VolumeChangeDimension;
@@ -12,6 +18,7 @@ public class CambioDimension : MonoBehaviour
     public PlayerLook pl;
     public PlayerEnergy pe;
     public float energyToRemove = 10;
+
 
 
 
