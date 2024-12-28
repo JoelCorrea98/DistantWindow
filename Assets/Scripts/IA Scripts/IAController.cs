@@ -349,7 +349,7 @@ public class IAController : MonoBehaviour
     {
         _plans.Clear();
         _Costs.Clear();
-
+        /*
         GOAPState goal = new GOAPState();
         //HACER .ADD SI FALLA!!!
        
@@ -361,8 +361,8 @@ public class IAController : MonoBehaviour
                     }
                 };
                 StartCoroutine(planner.GeneratePlan(goal));
-
-        /*
+        */
+        
                 GOAPState goalEnergy = new GOAPState();
 
                 goalEnergy.worldState = new WorldState()
@@ -373,7 +373,7 @@ public class IAController : MonoBehaviour
                     }
                 }; 
                  StartCoroutine(planner.GeneratePlan(goalEnergy));
-        */
+        
         /*foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             goal.worldState.values.Add(kvp.Key, kvp.Value);

@@ -223,7 +223,7 @@ public class GOAPPlanner : MonoBehaviour
                 {
                     if (!(bool)gS.worldState.values["PlayerAlive"] 
                     || !(bool)gS.worldState.values["EnoughEnergy"] 
-                    || (float)WorldStateManager.instance.GetState("PlayerEnergy") > 300 /2)
+                    || (float)WorldStateManager.instance.GetState("PlayerEnergy") > 300f /2f)
                     {
                         value = false;
 	                }
@@ -239,13 +239,13 @@ public class GOAPPlanner : MonoBehaviour
                 // Reducir la vida del jugador
                 if (gS.worldState.values.ContainsKey("PlayerEnergy"))
                 {
-                    int currentEnergy = (int)gS.worldState.values["PlayerEnergy"];
-                    gS.worldState.values["PlayerEnergy"] = Mathf.Max(0, currentEnergy - 25); // Reduce 25 punto de energia
+                    float currentEnergy = (float)gS.worldState.values["PlayerEnergy"];
+                    gS.worldState.values["PlayerEnergy"] = Mathf.Max(0, currentEnergy - 25f); // Reduce 25 punto de energia
                 }
 
                  // Verificar si el jugador no tiene energia
                 if (gS.worldState.values.ContainsKey("PlayerEnergy") &&
-                (int)gS.worldState.values["PlayerEnergy"] <= 0)
+                (float)gS.worldState.values["PlayerEnergy"] <= 0)
                 {
                      gS.worldState.values["PlayerLowEnergy"] = true;
                 }
