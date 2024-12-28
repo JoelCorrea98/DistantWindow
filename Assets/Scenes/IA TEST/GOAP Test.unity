@@ -5043,6 +5043,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 403224788}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &403224805 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5313107104316643208, guid: f38c37d74d183514287fe19a1393918e,
+    type: 3}
+  m_PrefabInstance: {fileID: 403224788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403224789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 350e8704c89103c49b231281fc573f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &404481310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8271,8 +8283,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scM: {fileID: 802295038}
   auM: {fileID: 234975585}
-  playerController: {fileID: 0}
-  spawnPoint: {fileID: 0}
+  playerController: {fileID: 403224805}
+  spawnPoint: {fileID: 904157516}
 --- !u!4 &654132413 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7835124943569531614, guid: 78939f091b7168345a631e6996c64ebf,
@@ -11159,6 +11171,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 324475666}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &904157515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 904157516}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &904157516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904157515}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.9998643, z: -0, w: -0.016477583}
+  m_LocalPosition: {x: -8.3, y: 1.05, z: 36.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -181.888, z: 0}
 --- !u!1 &905010912
 GameObject:
   m_ObjectHideFlags: 0
@@ -17371,7 +17414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSystem: {fileID: 1870961955}
   CurrentTarget: {x: 0, y: 0, z: 0}
-  RunSpeed: 10
+  RunSpeed: 3
 --- !u!135 &1320188425
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -26244,3 +26287,4 @@ SceneRoots:
   - {fileID: 2103043094}
   - {fileID: 1302328768}
   - {fileID: 1226466111}
+  - {fileID: 904157516}

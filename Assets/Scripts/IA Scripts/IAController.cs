@@ -22,7 +22,7 @@ public class IAController : MonoBehaviour
 
     //IEnumerable<Tuple<ActionEntity, Item>> _plan;
     private List<List<ActionEntity>> _plans=new List<List<ActionEntity>>();
-    private List<ActionEntity> _Currentplan;
+    [SerializeField] private List<ActionEntity> _Currentplan;
     private List<float> _Costs=new List<float>();
 
     public Transform _target;
@@ -39,7 +39,6 @@ public class IAController : MonoBehaviour
     private bool attackSuccessful = false; // Indica si el ataque fue exitoso
     public float attackDelay = 1.5f; // Tiempo de preparación del ataque
     public int attackDamage = 10; // Daño que inflige el ataque
-
 
     public LayerMask playerLayer; // Capa del jugador
     public Collider attackCollider; // Collider que usará el ataque
@@ -353,26 +352,28 @@ public class IAController : MonoBehaviour
 
         GOAPState goal = new GOAPState();
         //HACER .ADD SI FALLA!!!
-
-        goal.worldState = new WorldState()
-        {
-            values = new Dictionary<string, object>()
-            {
-                { "PlayerAlive", false } // Solo nos interesa que el jugador esté muerto
-            }
-        };
-        StartCoroutine(planner.GeneratePlan(goal));
-
-        GOAPState goalEnergy = new GOAPState();
        
-        goalEnergy.worldState = new WorldState()
-        {
-            values = new Dictionary<string, object>()
-            {
-                { "PlayerLowEnergy", true } // Solo nos interesa que el jugador esté muerto
-            }
-        }; 
-         StartCoroutine(planner.GeneratePlan(goalEnergy));
+                goal.worldState = new WorldState()
+                {
+                    values = new Dictionary<string, object>()
+                    {
+                        { "PlayerAlive", false } // Solo nos interesa que el jugador esté muerto
+                    }
+                };
+                StartCoroutine(planner.GeneratePlan(goal));
+
+        /*
+                GOAPState goalEnergy = new GOAPState();
+
+                goalEnergy.worldState = new WorldState()
+                {
+                    values = new Dictionary<string, object>()
+                    {
+                        { "PlayerLowEnergy", true } // Solo nos interesa que el jugador esté muerto
+                    }
+                }; 
+                 StartCoroutine(planner.GeneratePlan(goalEnergy));
+        */
         /*foreach (var kvp in WorldStateManager.instance.GetAllStates().values)
         {
             goal.worldState.values.Add(kvp.Key, kvp.Value);
@@ -477,7 +478,10 @@ public class IAController : MonoBehaviour
             Debug.LogWarning("No se ha asignado un jugador objetivo.");
             return;
         }
-
+        WorldStateManager.instance.SetState("EnemyDimension", WorldStateManager.instance.GetState("PlayerDimension"));
+        visionDetector.enabled = true;
+        attackCollider.enabled = true;
+        _characterMesh.SetActive(true);
         // Obtener la posición actual de la IA y del jugador
         Vector3 currentPosition = transform.position;
         Vector3 targetPosition = _target.position;

@@ -204,6 +204,7 @@ public class GOAPPlanner : MonoBehaviour
             {
                 gS.worldState.values["SameDimension"]=true;
                 gS.worldState.values["ReduceDistance"]=true;
+                gS.worldState.values["EnemyDimension"]=gS.worldState.values["PlayerDimension"];
                 return gS;
             }),
             new GOAPAction("Block")
@@ -251,7 +252,7 @@ public class GOAPPlanner : MonoBehaviour
 
                 return gS;
             })
-
+            
         };
     }
 
