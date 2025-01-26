@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnergyDrain : MonoBehaviour
@@ -13,6 +12,7 @@ public class EnergyDrain : MonoBehaviour
     public PlayerEnergy playerEnergy; // Referencia al componente de energía del jugador
     public PlayerController playerMovement; // Referencia al componente de movimiento del jugador
     private float originalSpeed; // Velocidad original del jugador
+    private bool isPlayerInside = false; // Bandera para verificar si el jugador está dentro del collider
 
     private void OnTriggerEnter(Collider other)
     {
@@ -37,14 +37,18 @@ public class EnergyDrain : MonoBehaviour
             }
 
             // Iniciar el drenaje de energía por segundo
-            energyDrainCoroutine = StartCoroutine(DrainEnergyOverTime());
+            if (!isPlayerInside) // Asegurarse de que no se inicie varias veces
+            {
+                isPlayerInside = true; // Marcar que el jugador está dentro
+                energyDrainCoroutine = StartCoroutine(DrainEnergyOverTime());
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         // Verificar si el objeto que sale es el jugador
-        if (other.CompareTag("Player"))
+        if ((1 << other.gameObject.layer & targetLayer) != 0)
         {
             // Restaurar la velocidad original del jugador
             if (playerMovement != null)
@@ -53,26 +57,30 @@ public class EnergyDrain : MonoBehaviour
             }
 
             // Detener la corutina de drenaje de energía
-            if (energyDrainCoroutine != null)
+            if (isPlayerInside) // Verificar si estaba dentro antes de salir
             {
-                StopCoroutine(energyDrainCoroutine);
-                energyDrainCoroutine = null;
+                isPlayerInside = false; // Marcar que el jugador está fuera
+                if (energyDrainCoroutine != null)
+                {
+                    StopCoroutine(energyDrainCoroutine);
+                    energyDrainCoroutine = null;
+                }
             }
         }
     }
 
     private IEnumerator DrainEnergyOverTime()
     {
-        while (true)
+        while (isPlayerInside) // Controlar el drenaje mientras el jugador esté dentro
         {
-            // Esperar un segundo
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1f); // Esperar un segundo
 
-            // Reducir energía del jugador si el componente está presente
-            if (playerEnergy != null)
+            if (playerEnergy != null && isPlayerInside) // Drenar energía si el jugador sigue dentro
             {
                 playerEnergy.subtractAmountOfEnergy(energyLossPerSecond);
             }
         }
     }
 }
+
+

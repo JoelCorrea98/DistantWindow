@@ -34,17 +34,25 @@ public class IAController : MonoBehaviour
     public GOAPPlanner planner;
     public Animator animator;
     public GameObject _characterMesh;
+
     //Atack
     private bool isAttacking = false; // Para evitar ataques simultáneos
     private bool attackSuccessful = false; // Indica si el ataque fue exitoso
     public float attackDelay = 1.5f; // Tiempo de preparación del ataque
     public int attackDamage = 10; // Daño que inflige el ataque
 
+    //Teleport
+    public float teleportDelay = 1.5f;
+
     public LayerMask playerLayer; // Capa del jugador
     public Collider attackCollider; // Collider que usará el ataque
 
     //Block
     public IABlockHability blockHability;
+
+    //Audio
+    public AudioSource audioSource;
+    public AudioClip teleportAudio;
 
     [SerializeField] private bool _playerInAttackRange=false;
 
@@ -88,16 +96,6 @@ public class IAController : MonoBehaviour
         if (isAttacking) return; // Si ya está atacando, salir
            
         StartCoroutine(PerformCoRAttack());
-
-        if (!attackSuccessful) 
-        {
-            _fsm.Feed(ActionEntity.FailedStep);
-        }
-        else
-        {
-            _fsm.Feed(ActionEntity.NextStep);
-        }
-
     }
 
     private void PerformTeleport()
@@ -159,8 +157,24 @@ public class IAController : MonoBehaviour
         chase.OnUpdate += () =>
         {
             //logica de search.OnUpdate
-            Debug.Log("chase update");
+            //movement.MoveTo(_target.position);
+            Debug.Log("Chase update");
 
+            // Si ya estamos lo suficientemente cerca para atacar, o a rango
+            if (_playerInAttackRange)
+            {
+                _fsm.Feed(ActionEntity.NextStep);
+                return;
+            }
+
+            // O si por X razones decidís que no lo veo más, entonces falla...
+            if (!visionDetector.IsPlayerDetected && !globalDetector.IsPlayerDetected)
+            {
+                _fsm.Feed(ActionEntity.FailedStep); // Vuelvo a Search, o algo así
+                return;
+            }
+
+            // Chequeo de llegar a destino (si tu AI lo maneja así)
             if (movement.HasReachedDestination())
             {
                 _fsm.Feed(ActionEntity.NextStep);
@@ -349,7 +363,7 @@ public class IAController : MonoBehaviour
     {
         _plans.Clear();
         _Costs.Clear();
-        /*
+        
         GOAPState goal = new GOAPState();
         //HACER .ADD SI FALLA!!!
        
@@ -361,7 +375,7 @@ public class IAController : MonoBehaviour
                     }
                 };
                 StartCoroutine(planner.GeneratePlan(goal));
-        */
+        
         
                 GOAPState goalEnergy = new GOAPState();
 
@@ -391,6 +405,9 @@ public class IAController : MonoBehaviour
 
     public void Movement()
     {
+        Debug.Log("Entre al Movement-------------------------------------------");
+        animator.SetBool("Teleporting", false);
+
         animator.SetBool("Runing", true);
 
         if (!movement.IsMoving)
@@ -428,6 +445,8 @@ public class IAController : MonoBehaviour
 
     private IEnumerator PerformCoRAttack()
     {
+        Debug.Log("Ataque (corrutina) en ejecucion");
+
         isAttacking = true;
         attackSuccessful = false; // Reiniciar el estado del ataque
 
@@ -467,6 +486,16 @@ public class IAController : MonoBehaviour
         // Esperar un pequeño tiempo para finalizar el ataque
         yield return new WaitForSeconds(0.1f);
 
+
+        if (!attackSuccessful)
+        {
+            _fsm.Feed(ActionEntity.FailedStep);
+        }
+        else
+        {
+            _fsm.Feed(ActionEntity.NextStep);
+        }
+
         isAttacking = false;
         Debug.Log($"Ataque {(attackSuccessful ? "exitoso" : "fallido")}");
     }
@@ -478,6 +507,11 @@ public class IAController : MonoBehaviour
             Debug.LogWarning("No se ha asignado un jugador objetivo.");
             return;
         }
+        animator.SetBool("Runing", false);
+        animator.SetBool("Teleporting", true);
+
+        playAudios(teleportAudio);
+
         WorldStateManager.instance.SetState("EnemyDimension", WorldStateManager.instance.GetState("PlayerDimension"));
         visionDetector.enabled = true;
         attackCollider.enabled = true;
@@ -495,8 +529,30 @@ public class IAController : MonoBehaviour
         // Teletransportar la IA a la nueva posición
         transform.position = newPosition;
 
+        StartCoroutine(teleportDelayTime());
+
         Debug.Log($"Teletransportado a {newPosition}");
     }
+
+    IEnumerator teleportDelayTime()
+    {
+        yield return new WaitForSeconds(teleportDelay);
+        animator.SetBool("Teleporting", false);
+        animator.SetBool("Runing", true);
+
+    }
+
+    public void playAudios(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.clip = clip;
+        }
+
+        // Reproducir el audio
+        audioSource.Play();
+    }
+
     public void PlayerInAttackRange(bool value)
     {
         _playerInAttackRange = value;

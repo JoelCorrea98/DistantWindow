@@ -10,6 +10,10 @@ public class IABlockHability : MonoBehaviour
     public float despawnTime = 5f; // Tiempo antes de que los objetos desaparezcan
     public float spawnDelay = 1f; // Tiempo entre cada spawn
     public float startDelay = 3f; // Tiempo antes de iniciar el spawn
+    public Animator animator;
+    public AudioSource audioSource;
+    public AudioClip clip;
+
 
     private List<GameObject> spawnedObjects = new List<GameObject>(); // Lista de objetos actualmente spawneados
 
@@ -39,6 +43,9 @@ public class IABlockHability : MonoBehaviour
     /// </summary>
     private IEnumerator SpawnWithDelays()
     {
+        animator.SetBool("Runing", false);
+        animator.SetBool("Cast", true);
+        playSound();
         yield return new WaitForSeconds(startDelay); // Esperar el delay inicial
 
         for (int i = 0; i < 3; i++)
@@ -71,5 +78,18 @@ public class IABlockHability : MonoBehaviour
 
         // Limpiar la lista de objetos spawneados
         spawnedObjects.Clear();
+        animator.SetBool("Cast", false);
+        animator.SetBool("Runing", true);
+    }
+
+    public void playSound()
+    {
+        if (clip != null)
+        {
+            audioSource.clip = clip;
+        }
+
+        // Reproducir el audio
+        audioSource.Play();
     }
 }
