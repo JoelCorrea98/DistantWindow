@@ -12,7 +12,7 @@ public enum AIState
     Block
 }
 public class AIStateController : MonoBehaviour
-{
+{/*
     public Transform Player;
     public AIMovement Movement;
     public PlayerLife PlayerLife;
@@ -48,6 +48,6 @@ public class AIStateController : MonoBehaviour
         currentState?.Exit();
         currentState = states[newState];
         currentState?.Enter();
-    }
+    }*/
 }
 

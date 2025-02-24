@@ -1,74 +1,100 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class SearchState : AIStateBase
+public class SearchState : IAState
 {
-    public SearchState(AIStateController controller) : base(controller)  { }
-
-    public override void Enter()
+    public SearchState(IAController controller) : base(controller, "Search")
     {
-        Debug.Log("Entering Search State");
-        // Configurar lógica inicial
     }
 
-    public override void Update()
+    protected override void OnStateEnter(ActionEntity trigger)
     {
-        //Debug.Log("Searching...");
+        Debug.Log("search enter");
+        _controller.energyManager.SpendEnergy(1);
 
-        Movement();
+        // Al entrar, configuramos animaciones, flags, etc.
+        _controller.animator.SetBool("Teleporting", false);
+        _controller.animator.SetBool("Runing", true);
 
-        // Verificar si el jugador ha sido detectado
-        if (controller.VisionDetector.IsPlayerDetected || controller.GlobalDetector.IsPlayerDetected)
+        if (_controller.searchSound != null)
+        {
+            _controller.audioSource.clip = _controller.searchSound;
+            _controller.audioSource.Play();
+        }
+    }
+
+    protected override void OnStateUpdate()
+    {
+        if (_controller._target == null)
+            return;
+
+        // 1) Patrullamos de forma random
+        PatrolMovement();
+
+        // 2) Comprobamos si detectamos al jugador
+        if (_controller.visionDetector.IsPlayerDetected ||
+            _controller.globalDetector.IsPlayerDetected)
         {
             Debug.Log("Player detected during search!");
-            //controller.iAController.DefineNewPlan(); // ya hice la accion
+            // Actualizamos un estado global si quieres
+            WorldStateManager.instance.SetState("PlayerDetected", true);
+
+            // Pasamos al siguiente paso en el plan
+            _controller.FSM.Feed(ActionEntity.NextStep);
         }
     }
 
-    public void Movement()
+    protected override void OnStateExit(ActionEntity trigger)
     {
+        Debug.Log("search exit");
+    }
 
-        if (!controller.Movement.IsMoving)
+    /// <summary>
+    /// Lógica de patrullaje aleatorio y rotación
+    /// </summary>
+    private void PatrolMovement()
+    {
+        // Si no estamos moviendo, elegimos un destino aleatorio
+        if (!_controller.movement.IsMoving)
         {
             Vector3 randomTarget = GetRandomPosition();
-            controller.Movement.MoveTo(randomTarget);
-            //Debug.Log("Moving to random target: " + randomTarget);
+            _controller.movement.MoveTo(randomTarget);
         }
 
-        if (controller.Movement.HasReachedDestination())
+        // Si se llegó al destino, elegimos uno nuevo
+        if (_controller.movement.HasReachedDestination())
         {
-            //Debug.Log("Reached target. Generating new patrol target.");
             Vector3 newTarget = GetRandomPosition();
-            controller.Movement.MoveTo(newTarget);
+            _controller.movement.MoveTo(newTarget);
         }
 
-        if (controller.Movement.IsMoving)
+        // Rotamos hacia la dirección de movimiento
+        if (_controller.movement.IsMoving)
         {
-            Vector3 direction = controller.Movement.CurrentTarget - controller.transform.position;
-            direction.y = 0; // Mantener la rotación en el plano horizontal
-
+            Vector3 direction = _controller.movement.CurrentTarget - _controller.transform.position;
+            direction.y = 0;
             if (direction.sqrMagnitude > 0.01f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, targetRotation, Time.deltaTime * 3);
+                _controller.transform.rotation = Quaternion.Slerp(
+                    _controller.transform.rotation,
+                    targetRotation,
+                    Time.deltaTime * 3
+                );
             }
         }
     }
 
-    public override void Exit()
-    {
-        Debug.Log("Exiting Search State");
-        // Limpiar lógica si es necesario
-        //controller.worldState.SetState("PlayerDetected", true); // Notificar al WorldState
-        //WorldStateManager.instance.SetState("PlayerDetected", true);
-
-        controller.EnergyManager.AddEnergy(2); // Agregar energía si es necesario
-    }
-
+    /// <summary>
+    /// Generar posición aleatoria dentro de un rango
+    /// </summary>
     private Vector3 GetRandomPosition()
     {
-        // Generar una posición aleatoria dentro de un rango
-        return new Vector3(Random.Range(0, 40), 0, Random.Range(0, 40));
+        return new Vector3(
+            Random.Range(0, 40),
+            0,
+            Random.Range(0, 40)
+        );
     }
 }
+
