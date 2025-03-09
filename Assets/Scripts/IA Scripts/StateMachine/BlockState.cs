@@ -21,6 +21,9 @@ public class BlockState : IAState
         animator = _controller.animator;
         // 1) Gastamos energía
         _controller.energyManager.SpendEnergy(4);
+        //_controller.audioManager.StopAllAudio();
+        _controller.audioManager.PlayStateAudio(ActionEntity.Block);
+
 
         // 2) Iniciamos la corrutina principal de bloqueo
         //_controller.blockHability.SpawnClosestObjects(_controller.player.transform.position);
@@ -37,6 +40,8 @@ public class BlockState : IAState
     {
         Debug.Log("block exit");
         animator.SetBool("Cast", false);
+        _controller.audioManager.StopStateAudio(ActionEntity.Block);
+
         // Si necesitas limpiar algo justo al salir del estado, lo harías aquí
     }
 
@@ -45,9 +50,6 @@ public class BlockState : IAState
     /// </summary>
     private IEnumerator SpawnWithDelays()
     {
-        // Podemos usar el MISMO animator general,
-        // o uno especial que hayas referenciado como "blockAnimator"
-
         // Activamos anim de "Cast"
         if (animator != null)
         {
@@ -55,38 +57,39 @@ public class BlockState : IAState
             animator.SetBool("Cast", true);
         }
 
-        // Reproducimos sonido (si existe)
-        PlaySound();
-
-        // Esperamos el tiempo de inicio
         yield return new WaitForSeconds(_controller.blockStartDelay);
 
-        // Validamos que tengamos suficientes spawn points
-        List<Transform> spawnPoints = _controller.blockSpawnPoints;
-        if (spawnPoints == null || spawnPoints.Count < 3)
-        {
-            Debug.LogWarning("No hay suficientes spawn points configurados para BlockState.");
-            // Salimos sin spawnear
-            yield break;
-        }
-
-        // Ordenamos los puntos de spawn por distancia al jugador
+        // Obtenemos la posición y dirección del jugador
         Vector3 playerPos = (_controller._target != null)
                             ? _controller._target.position
                             : _controller.transform.position;
 
-        spawnPoints.Sort((a, b) =>
-            Vector3.Distance(playerPos, a.position)
-                    .CompareTo(Vector3.Distance(playerPos, b.position)));
+        Vector3 playerForward = (_controller._target != null)
+                                ? _controller._target.forward
+                                : _controller.transform.forward;
+
+        playerForward = -playerForward;
+
+        // Definimos un rango de spawn y separación entre objetos
+        float spawnDistance = 5f; // Distancia frente al jugador
+        float spawnRange = 2f; // Rango aleatorio en el eje lateral
+        float separation = 5f; // Separación entre objetos
 
         // Spawneamos 3 objetos
         for (int i = 0; i < 3; i++)
         {
-            Transform spawnPoint = spawnPoints[i];
+            // Calculamos la posición de spawn
+            float offsetX = Random.Range(-spawnRange, spawnRange);
+            float offsetZ = spawnDistance + i * separation; // Añadimos separación en el eje forward
+
+            Vector3 spawnOffset = new Vector3(offsetX, 0, offsetZ);
+            Vector3 spawnPosition = playerPos + playerForward * spawnOffset.z + _controller.transform.right * spawnOffset.x;
+
+            // Instanciamos el objeto
             GameObject spawnedObject = GameObject.Instantiate(
                 _controller.blockObjectPrefab,
-                spawnPoint.position,
-                spawnPoint.rotation
+                spawnPosition,
+                Quaternion.identity // Rotación por defecto
             );
 
             _spawnedObjects.Add(spawnedObject);
@@ -124,14 +127,6 @@ public class BlockState : IAState
         }
 
         // Si deseas, puedes forzar al FSM a pasar al siguiente estado cuando termina la habilidad
-        // _controller.FSM.Feed(ActionEntity.NextStep);
-    }
-
-    /// <summary>
-    /// Reproduce el sonido asignado al "Block".
-    /// </summary>
-    private void PlaySound()
-    {
-        _controller.audioManager.PlayStateAudio(ActionEntity.Block);
+        _controller.FSM.Feed(ActionEntity.NextStep);
     }
 }

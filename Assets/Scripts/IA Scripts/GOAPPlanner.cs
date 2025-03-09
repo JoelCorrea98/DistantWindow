@@ -208,7 +208,7 @@ public class GOAPPlanner : MonoBehaviour
                 return gS;
             }),
             new GOAPAction("Block")
-            .SetCost(3f)
+            .SetCost(1f)
             .Pre((gS) =>
             {
 
@@ -223,12 +223,20 @@ public class GOAPPlanner : MonoBehaviour
                 {
                     if (!(bool)gS.worldState.values["PlayerAlive"] 
                     || !(bool)gS.worldState.values["EnoughEnergy"] 
-                    || (float)WorldStateManager.instance.GetState("PlayerEnergy") > 300f /2f)
+                    || (float)WorldStateManager.instance.GetState("PlayerEnergy") > 300f /3f)
                     {
                         value = false;
 	                }
 	            }
-                        
+
+                if ((bool)gS.worldState.values["PlayerAlive"]
+                && (bool)gS.worldState.values["EnoughEnergy"]
+                && (bool)gS.worldState.values["PlayerVulnerable"]
+                && (bool)gS.worldState.values["PlayerDetected"])
+                {
+                    value = true;
+                }
+
                 return value;
             })
             .Effect((gS) =>
@@ -236,7 +244,7 @@ public class GOAPPlanner : MonoBehaviour
                 gS.worldState.values["PlayerBlocked"]=true;
 
 
-                // Reducir la vida del jugador
+                // Reducir la energia del jugador
                 if (gS.worldState.values.ContainsKey("PlayerEnergy"))
                 {
                     float currentEnergy = (float)gS.worldState.values["PlayerEnergy"];

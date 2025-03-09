@@ -206,5 +206,10 @@ public class IAController : MonoBehaviour
     {
         globalDetector = actualDetector;
     }
+
+    public void NotifyPlayerVulnerableZone()
+    {
+        DefineNewPlan();
+    }
 }
 
