@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnergyDrain : MonoBehaviour
 {
     [Header("Configuración")]
+    public float colldierTimeActivation;
     public float initialEnergyLoss = 10f; // Energía que pierde al entrar
     public float energyLossPerSecond = 5f; // Energía que pierde por segundo
     public float movementSpeedReduction = 0.5f; // Porcentaje de reducción de velocidad (0.5 = 50%)
@@ -13,7 +14,27 @@ public class EnergyDrain : MonoBehaviour
     public PlayerController playerMovement; // Referencia al componente de movimiento del jugador
     private float originalSpeed; // Velocidad original del jugador
     private bool isPlayerInside = false; // Bandera para verificar si el jugador está dentro del collider
+    private MeshRenderer meshRenderer;
+    private Collider collider;
+    private ParticleSystem particle;
+    public void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+        collider = GetComponent<Collider>();
+        particle = GetComponent<ParticleSystem>();
+        StartCoroutine("SpawnBlock");
+    }
 
+
+    private IEnumerator SpawnBlock()
+    {
+        yield return new WaitForSeconds(colldierTimeActivation);
+        meshRenderer.enabled = true;
+        collider.enabled = true;
+        particle.enableEmission = false;
+
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         // Verificar si el objeto que entra es el jugador

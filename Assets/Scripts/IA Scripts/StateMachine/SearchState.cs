@@ -16,11 +16,15 @@ public class SearchState : IAState
         _controller.animator.SetBool("Teleporting", false);
         _controller.animator.SetBool("Runing", true);
 
-        if (_controller.searchSound != null)
+        _controller.audioManager.PlayStateAudio(ActionEntity.Search);
+        _controller.audioManager.StopStateAudio(ActionEntity.Chase);
+
+
+        /*if (_controller.searchSound != null)
         {
             _controller.audioSource.clip = _controller.searchSound;
             _controller.audioSource.Play();
-        }
+        }*/
     }
 
     protected override void OnStateUpdate()

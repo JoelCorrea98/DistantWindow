@@ -7,6 +7,7 @@ public class BlockState : IAState
 {
     // Lista interna de objetos spawneados
     private List<GameObject> _spawnedObjects = new List<GameObject>();
+    private Animator animator;
 
     public BlockState(IAController controller) : base(controller, "Block")
     {
@@ -17,10 +18,12 @@ public class BlockState : IAState
     protected override void OnStateEnter(ActionEntity trigger)
     {
         Debug.Log("block enter");
+        animator = _controller.animator;
         // 1) Gastamos energía
         _controller.energyManager.SpendEnergy(4);
 
         // 2) Iniciamos la corrutina principal de bloqueo
+        //_controller.blockHability.SpawnClosestObjects(_controller.player.transform.position);
         _controller.StartCoroutine(SpawnWithDelays());
     }
 
@@ -33,6 +36,7 @@ public class BlockState : IAState
     protected override void OnStateExit(ActionEntity trigger)
     {
         Debug.Log("block exit");
+        animator.SetBool("Cast", false);
         // Si necesitas limpiar algo justo al salir del estado, lo harías aquí
     }
 
@@ -43,7 +47,6 @@ public class BlockState : IAState
     {
         // Podemos usar el MISMO animator general,
         // o uno especial que hayas referenciado como "blockAnimator"
-        Animator animator = _controller.animator;
 
         // Activamos anim de "Cast"
         if (animator != null)
@@ -129,16 +132,6 @@ public class BlockState : IAState
     /// </summary>
     private void PlaySound()
     {
-        AudioSource audioSource = _controller.audioSource;
-
-        AudioClip clip = _controller.blockAudioClip
-                         ? _controller.blockAudioClip
-                         : _controller.teleportAudio; // Ejemplo fallback
-
-        if (audioSource != null && clip != null)
-        {
-            audioSource.clip = clip;
-            audioSource.Play();
-        }
+        _controller.audioManager.PlayStateAudio(ActionEntity.Block);
     }
 }

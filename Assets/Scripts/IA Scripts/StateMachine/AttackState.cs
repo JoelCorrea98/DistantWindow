@@ -5,6 +5,7 @@ public class AttackState : IAState
 {
     private bool _isAttacking;
     private bool _attackSuccessful;
+    private bool _KeepRunningAttack;
 
     public AttackState(IAController controller) : base(controller, "Attack")
     {
@@ -13,6 +14,7 @@ public class AttackState : IAState
     protected override void OnStateEnter(ActionEntity trigger)
     {
         Debug.Log("attack enter");
+        _KeepRunningAttack = true;
 
         if (_controller.IsPlayerInAttackRange)
         {
@@ -38,6 +40,11 @@ public class AttackState : IAState
     {
         // Aquí podrías manejar, si fuera necesario, más lógica durante el ataque
         // Por ej.: chequeos de si el jugador salió de rango en pleno ataque, etc.
+
+        if (_KeepRunningAttack)
+        {
+            _controller.movement.MoveDirectlyTo(_controller._target.position);
+        }
     }
 
     protected override void OnStateExit(ActionEntity trigger)
@@ -54,26 +61,31 @@ public class AttackState : IAState
         // Configuramos animaciones
         _controller.animator.SetBool("Runing", false);
         _controller.animator.SetTrigger("TriggerAttackAnim");
+        _controller.animator.SetLayerWeight(1, 1);
         //Sonido
-        if (_controller.attacksound != null)
+        _controller.audioManager.PlayStateAudio(ActionEntity.Attack);
+
+
+        /*if (_controller.attacksound != null)
         {
             _controller.audioSource.clip = _controller.attacksound;
             _controller.audioSource.Play();
-        }
+        }*/
+
 
         // Simular preparación del ataque
         yield return new WaitForSeconds(_controller.attackDelay);
 
         // Activar el collider de ataque
-        if (_controller.attackCollider != null)
+        if (_controller.attackHitCollider != null)
         {
-            _controller.attackCollider.enabled = true;
+            _controller.attackHitCollider.enabled = true;
 
             // Comprobar colisiones
             var hitColliders = Physics.OverlapBox(
-                _controller.attackCollider.bounds.center,
-                _controller.attackCollider.bounds.extents,
-                _controller.attackCollider.transform.rotation,
+                _controller.attackHitCollider.bounds.center,
+                _controller.attackHitCollider.bounds.extents,
+                _controller.attackHitCollider.transform.rotation,
                 _controller.playerLayer
             );
 
@@ -88,11 +100,14 @@ public class AttackState : IAState
             }
 
             // Desactivar el collider
-            _controller.attackCollider.enabled = false;
+            _controller.attackHitCollider.enabled = false;
+            _controller.animator.SetLayerWeight(1, 0);
         }
+        _controller.audioManager.StopStateAudio(ActionEntity.Attack);
 
         // Esperar un pequeño tiempo tras el ataque
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2.5f);
+
 
         // Avisar al FSM
         if (!_attackSuccessful)
@@ -100,7 +115,11 @@ public class AttackState : IAState
         else
             _controller.FSM.Feed(ActionEntity.NextStep);
 
+        _KeepRunningAttack = false;
+        yield return new WaitForSeconds(1f);
+        _KeepRunningAttack = true;
         _isAttacking = false;
+
         Debug.Log($"Ataque {(_attackSuccessful ? "exitoso" : "fallido")}");
     }
 }

@@ -21,6 +21,9 @@ public class IAController : MonoBehaviour
     private EventFSM<ActionEntity> _fsm;
     public EventFSM<ActionEntity> FSM => _fsm;
 
+    // Audio
+    public IAAudioManager audioManager;
+
     // Plan
     private List<List<ActionEntity>> _plans = new List<List<ActionEntity>>();
     private List<float> _Costs = new List<float>();
@@ -48,6 +51,7 @@ public class IAController : MonoBehaviour
     public AudioClip blockAudioClip;
     public AudioClip attacksound;
     public Collider attackCollider;
+    public Collider attackHitCollider;
     public LayerMask playerLayer;
 
     public List<Transform> blockSpawnPoints;
@@ -124,12 +128,14 @@ public class IAController : MonoBehaviour
         {
             visionDetector.enabled = false;
             attackCollider.enabled = false;
+            attackHitCollider.enabled = false;
             _characterMesh.SetActive(false);
         }
         else
         {
             visionDetector.enabled = true;
             attackCollider.enabled = true;
+            attackHitCollider.enabled = true;
             _characterMesh.SetActive(true);
         }
 
@@ -194,6 +200,11 @@ public class IAController : MonoBehaviour
     public void PlayerInAttackRange(bool value)
     {
         _playerInAttackRange = value;
+    }
+
+    public void NotifyPlayerDetected(GlobalDetector actualDetector)
+    {
+        globalDetector = actualDetector;
     }
 }
 

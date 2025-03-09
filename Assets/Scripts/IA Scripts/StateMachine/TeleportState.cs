@@ -33,11 +33,13 @@ public class TeleportState : IAState
         _controller.animator.SetBool("Teleporting", true);
 
         // Audio
-        if (_controller.teleportAudio != null)
+        _controller.audioManager.PlayStateAudio(ActionEntity.Teleport);
+
+        /*if (_controller.teleportAudio != null)
         {
             _controller.audioSource.clip = _controller.teleportAudio;
             _controller.audioSource.Play();
-        }
+        }*/
 
         // Ajustar dimensión a la del jugador
         WorldStateManager.instance.SetState("EnemyDimension",
@@ -51,11 +53,16 @@ public class TeleportState : IAState
         {
             Vector3 currentPosition = _controller.transform.position;
             Vector3 targetPosition = _controller._target.position;
-            Vector3 directionToTarget = targetPosition - currentPosition;
+            Vector3 directionToTarget = (targetPosition - currentPosition).normalized;
 
             // Te acercas un 60%
             Vector3 newPosition = currentPosition + directionToTarget * 0.6f;
             _controller.transform.position = newPosition;
+
+            //Rotamos hacia el target
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget) ;
+            _controller.transform.rotation = targetRotation;
+
             Debug.Log($"Teletransportado a {newPosition}");
         }
 
@@ -65,6 +72,9 @@ public class TeleportState : IAState
         // Terminar animación
         _controller.animator.SetBool("Teleporting", false);
         _controller.animator.SetBool("Runing", true);
+
+        _controller.audioManager.StopStateAudio(ActionEntity.Teleport);
+
 
         // Al terminar, alimentamos el FSM
         _controller.FSM.Feed(ActionEntity.NextStep);

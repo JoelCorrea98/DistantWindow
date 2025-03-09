@@ -18,7 +18,7 @@ public class GlobalDetector : MonoBehaviour
             //iaController.WorldState.SetState("PlayerDetected", true);
             IsPlayerDetected = true;
             WorldStateManager.instance.SetState("PlayerDetected", true);
-            //iaController.NotifyPlayerDetected(true);
+            iaController.NotifyPlayerDetected(this);
         }
     }
 
@@ -26,12 +26,17 @@ public class GlobalDetector : MonoBehaviour
     {
         if ((1 << other.gameObject.layer & targetLayer) != 0)
         {
-            //Debug.Log($"Player left {detectorName} detector!");
-            IsPlayerDetected = false;
-            WorldStateManager.instance.SetState("PlayerDetected", false);
-            //iaController.NotifyPlayerDetected(false);
-            //iaController.WorldState.SetState("PlayerDetected", false);
+            StartCoroutine("lossPlayerDetection");
         }
+    }
+
+    private IEnumerator lossPlayerDetection()
+    {
+        yield return new WaitForSeconds(5f);
+
+        IsPlayerDetected = false;
+        WorldStateManager.instance.SetState("PlayerDetected", false);
+
     }
 }
 
